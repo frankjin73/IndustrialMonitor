@@ -2,5 +2,5 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="IndustrialMonitor.vcxproj" />
+  <Project Path="IndustrialMonitor.vcxproj" Id="f7a8634c-b9f5-4642-aff1-5c6b1efffca7" />
 </Solution>
