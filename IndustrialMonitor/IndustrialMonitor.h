@@ -2,6 +2,8 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_IndustrialMonitor.h"
+#include <Qlabel>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -14,6 +16,7 @@ class IndustrialMonitor : public QMainWindow
 public:
     IndustrialMonitor(QWidget *parent = nullptr);
     ~IndustrialMonitor();
+    void initUI();
 
 private:
     Ui::IndustrialMonitorClass *ui;
