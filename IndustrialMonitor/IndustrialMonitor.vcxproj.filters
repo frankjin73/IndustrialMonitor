@@ -35,23 +35,32 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="SerialConfigWidget.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="src\ui\IndustrialMonitor.ui">
-      <Filter>Form Files</Filter>
+    <QtUic Include="SerialConfigWidget.ui">
+      <Filter>src</Filter>
     </QtUic>
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="src\ui\IndustrialMonitor.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
+    <QtUic Include="src\ui\IndustrialMonitor.ui">
+      <Filter>src</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\IndustrialMonitor.qrc">
       <Filter>resources</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\ui\IndustrialMonitor.h">
+      <Filter>src</Filter>
+    </QtMoc>
+    <QtMoc Include="SerialConfigWidget.h">
+      <Filter>src</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>
