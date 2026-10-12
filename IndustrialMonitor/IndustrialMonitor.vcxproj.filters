@@ -27,28 +27,23 @@
     <Filter Include="resources">
       <UniqueIdentifier>{c231a58c-681e-42f3-97d7-1ccef411550c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{b3922d15-bc60-4e0a-b4fd-dc3a93514356}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\ui\IndustrialMonitor.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="SerialConfigWidget.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\ui\IndustrialMonitor.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\SerialConfigWidget.cpp">
+      <Filter>src\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="SerialConfigWidget.ui">
-      <Filter>src</Filter>
-    </QtUic>
-    <QtUic Include="src\ui\IndustrialMonitor.ui">
-      <Filter>src</Filter>
-    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\IndustrialMonitor.qrc">
@@ -56,11 +51,19 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="src\ui\IndustrialMonitor.ui">
+      <Filter>src\ui</Filter>
+    </QtUic>
+    <QtUic Include="src\ui\SerialConfigWidget.ui">
+      <Filter>src\ui</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
     <QtMoc Include="src\ui\IndustrialMonitor.h">
-      <Filter>src</Filter>
+      <Filter>src\ui</Filter>
     </QtMoc>
-    <QtMoc Include="SerialConfigWidget.h">
-      <Filter>src</Filter>
+    <QtMoc Include="src\ui\SerialConfigWidget.h">
+      <Filter>src\ui</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

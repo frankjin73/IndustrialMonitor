@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>813</width>
-    <height>433</height>
+    <width>1001</width>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>162</x>
+      <x>260</x>
       <y>10</y>
       <width>611</width>
       <height>351</height>
@@ -116,13 +116,23 @@
      </attribute>
     </widget>
    </widget>
+   <widget class="QWidget" name="serialConfigContainer" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>241</width>
+      <height>351</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>813</width>
+     <width>1001</width>
      <height>20</height>
     </rect>
    </property>
