@@ -19,6 +19,7 @@ SerialConfigWidget::SerialConfigWidget(QWidget *parent)
     //连接信号与槽
     connect(ui->refreshButton, &QPushButton::clicked, this, &SerialConfigWidget::refreshPorts);
     connect(ui->toggleButton,&QPushButton::clicked, this,&SerialConfigWidget::togglePort);
+    connect(m_serialPort, &QSerialPort::readyRead, this, &SerialConfigWidget::onReadyRead);
 }
 
 SerialConfigWidget::~SerialConfigWidget() {
@@ -110,6 +111,12 @@ void SerialConfigWidget::togglePort() {
     emit portOpened(portName, currentBaudRate());
 }
 
+void SerialConfigWidget::onReadyRead() {
+    const QByteArray data = m_serialPort->readAll();
+    if (!data.isEmpty()) {
+        emit dataReceived(data);
+    }
+}
 
 //初始化波特率
 void SerialConfigWidget::setupBaudRateOptions() {

@@ -37,7 +37,7 @@
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>190</y>
+        <y>240</y>
         <width>451</width>
         <height>81</height>
        </rect>
@@ -71,10 +71,32 @@
        <rect>
         <x>70</x>
         <y>20</y>
-        <width>401</width>
-        <height>131</height>
+        <width>471</width>
+        <height>211</height>
        </rect>
       </property>
+      <widget class="QGroupBox" name="rawDataGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>10</y>
+         <width>381</width>
+         <height>171</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>原始数据</string>
+       </property>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="1">
+         <widget class="QPlainTextEdit" name="rawDataTextEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="alarmTab">

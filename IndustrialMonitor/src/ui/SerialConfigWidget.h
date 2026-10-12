@@ -28,10 +28,13 @@ signals:
 	void portClosed();
 	//出错
 	void errorOccurred(const QString &message);
+	//串口收到数据
+	void dataReceived(const QByteArray &data);
 
 private slots:
 	void refreshPorts();
 	void togglePort();
+	void onReadyRead();
 
 private:
 	void setupBaudRateOptions();

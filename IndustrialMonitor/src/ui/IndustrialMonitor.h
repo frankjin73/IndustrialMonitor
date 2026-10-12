@@ -24,6 +24,7 @@ private slots:
     void onPortOpened(const QString& portName, qint32 baudRate);
     void onPortClosed();
     void onSerialError(const QString &message);
+    void onDataReceived(const QByteArray& data);
 
 private:
     Ui::IndustrialMonitorClass *ui;
