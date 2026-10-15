@@ -23,6 +23,8 @@ public:
 	qint32 currentParity() const;
 	qint32 currentStopBits() const;
 
+	bool isOpen = false;
+
 signals:
 	void openRequested(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits);
 	void closeRequested();
@@ -41,7 +43,7 @@ private slots:
 	void togglePort();
 	void onReadyRead();*/
 
-private slots: 
+public slots: 
 	void refreshPorts();
 	void togglePort();
 	//串口打开
@@ -59,6 +61,6 @@ private:
 	void setUiEnabled(bool open);
 
 	Ui::SerialConfigWidgetClass* ui;
-	bool isOpen = false;
+
 };
 

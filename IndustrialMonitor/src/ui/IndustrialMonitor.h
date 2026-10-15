@@ -10,6 +10,7 @@ namespace Ui { class IndustrialMonitorClass; };
 QT_END_NAMESPACE
 
 class SerialConfigWidget;
+class SerialWoker;
 
 class IndustrialMonitor : public QMainWindow
 {
@@ -29,6 +30,8 @@ private slots:
 private:
     Ui::IndustrialMonitorClass *ui;
     SerialConfigWidget *m_serialConfig;
-    QLabel* m_statusLabel = nullptr;
+    SerialWoker *m_serialWorker;
+    QThread* m_serialThread;
+    QLabel *m_statusLabel = nullptr;
 };
 

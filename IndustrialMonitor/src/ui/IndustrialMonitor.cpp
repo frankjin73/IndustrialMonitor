@@ -1,5 +1,6 @@
 #include "IndustrialMonitor.h"
 #include "SerialConfigWidget.h"
+#include "SerialWoker.h"
 
 #include <QVBoxLayout>
 
@@ -7,23 +8,64 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::IndustrialMonitorClass())
     , m_serialConfig(new SerialConfigWidget(this))
+    , m_serialWorker(new SerialWoker())
+    , m_serialThread(new QThread(this))
 {
     ui->setupUi(this);
-
     this->resize(1200, 800);
-    
     initUI();
+
+    m_serialWorker->moveToThread(m_serialThread);
     
     //连接信号与槽
     //connect(m_serialConfig, &SerialConfigWidget::portOpened, this, &IndustrialMonitor::onPortOpened);
     //connect(m_serialConfig, &SerialConfigWidget::portClosed, this, &IndustrialMonitor::onPortClosed);
     //connect(m_serialConfig, &SerialConfigWidget::errorOccurred, this, &IndustrialMonitor::onSerialError);
     //connect(m_serialConfig, &SerialConfigWidget::dataReceived, this, &IndustrialMonitor::onDataReceived);
+
+    //关闭串口
+    connect(m_serialConfig, &SerialConfigWidget::closeRequested, m_serialWorker, &SerialWoker::closePort);
+    //打开串口
+    connect(m_serialConfig, &SerialConfigWidget::openRequested, m_serialWorker, &SerialWoker::openPort);
+
+    //设置statusLabe
+    connect(m_serialWorker, &SerialWoker::portOpened, this, &IndustrialMonitor::onPortOpened);
+    connect(m_serialWorker, &SerialWoker::portClosed, this, &IndustrialMonitor::onPortClosed);
+    connect(m_serialWorker, &SerialWoker::errorOccurred, this, &IndustrialMonitor::onSerialError);
+    
+    //处理收到的数据
+    connect(m_serialWorker, &SerialWoker::dataReceived, this, &IndustrialMonitor::onDataReceived);
+
+    //改变SerialConfigWidget的ui
+    connect(m_serialWorker, &SerialWoker::portOpened, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portOpened(); });
+    connect(m_serialWorker, &SerialWoker::portClosed, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portClosed(); });
+    
+    m_serialThread->start();
 }
 
 IndustrialMonitor::~IndustrialMonitor()
 {
-    delete ui;
+    if (m_serialThread->isRunning()) {
+        m_serialThread->quit(); 
+        m_serialThread->wait();
+    }
+
+    if (m_serialWorker) {
+        delete m_serialWorker;
+        m_serialWorker = nullptr;
+    }
+
+    if (m_serialConfig) {
+        delete m_serialConfig;
+        m_serialConfig = nullptr;
+    }
+
+
+
+    if (ui) {
+        delete ui;
+        ui = nullptr;
+    }
 }
 
 void IndustrialMonitor::initUI()

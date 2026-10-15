@@ -10,6 +10,7 @@ class SerialWoker :
 
 public:
     SerialWoker(QObject *parent);
+    SerialWoker() = default;
     ~SerialWoker();
 
     bool isOpen() const;
@@ -24,9 +25,9 @@ signals:
     //串口收到数据
     void dataReceived(const QByteArray &date);
     
-private slots:
-    void refreshPorts();
-    void togglePort(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits);
+public slots:
+    void openPort(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits);
+    void closePort();
     void onReadyRead();
 
 private:

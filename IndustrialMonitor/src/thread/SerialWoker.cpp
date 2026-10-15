@@ -3,11 +3,15 @@
 
 SerialWoker::SerialWoker(QObject* parent)
 :QObject(parent)
-,m_serialPort(new QSerialPort(this)) {}
+,m_serialPort(nullptr) {
+    
+}
 
 SerialWoker::~SerialWoker() {
-    if (m_serialPort->isOpen()) {
-        m_serialPort->close();
+    if (m_serialPort) {
+        if (m_serialPort->isOpen()) {
+            m_serialPort->close();
+        }
     }
 }
 
@@ -16,12 +20,16 @@ bool SerialWoker::isOpen() const
     return m_serialPort->isOpen();
 }
 
-void SerialWoker::togglePort(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits) {
+void SerialWoker::openPort(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits) {
+    if (!m_serialPort) {
+        m_serialPort = new QSerialPort(this);
+    }
+
     if (m_serialPort->isOpen()) {
-        m_serialPort->close();
-        emit portClosed();
         return;
     }
+
+    connect(m_serialPort, &QSerialPort::readyRead, this, &SerialWoker::onReadyRead);
 
     m_serialPort->setPortName(portName);
     m_serialPort->setBaudRate(baudRate);
@@ -38,6 +46,14 @@ void SerialWoker::togglePort(const QString& portName, qint32 baudRate, qint8 dat
     }
 
     emit portOpened(portName, baudRate);
+}
+
+void SerialWoker::closePort() {
+    if (m_serialPort->isOpen()) {
+        m_serialPort->close();
+        emit portClosed();
+    }
+
 }
 
 void SerialWoker::onReadyRead() {

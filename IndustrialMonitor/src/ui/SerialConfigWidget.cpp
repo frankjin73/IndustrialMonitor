@@ -14,6 +14,8 @@ SerialConfigWidget::SerialConfigWidget(QWidget *parent)
 	setupParityOptions();
 	setupStopBitsOptions();
 
+	refreshPorts();
+
 	connect(ui->refreshButton, &QPushButton::clicked, this, &SerialConfigWidget::refreshPorts);
 	connect(ui->toggleButton, &QPushButton::clicked, this, &SerialConfigWidget::togglePort);
 
