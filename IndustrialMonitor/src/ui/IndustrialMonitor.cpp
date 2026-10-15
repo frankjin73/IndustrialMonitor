@@ -15,10 +15,10 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     initUI();
     
     //连接信号与槽
-    connect(m_serialConfig, &SerialConfigWidget::portOpened, this, &IndustrialMonitor::onPortOpened);
-    connect(m_serialConfig, &SerialConfigWidget::portClosed, this, &IndustrialMonitor::onPortClosed);
-    connect(m_serialConfig, &SerialConfigWidget::errorOccurred, this, &IndustrialMonitor::onSerialError);
-    connect(m_serialConfig, &SerialConfigWidget::dataReceived, this, &IndustrialMonitor::onDataReceived);
+    //connect(m_serialConfig, &SerialConfigWidget::portOpened, this, &IndustrialMonitor::onPortOpened);
+    //connect(m_serialConfig, &SerialConfigWidget::portClosed, this, &IndustrialMonitor::onPortClosed);
+    //connect(m_serialConfig, &SerialConfigWidget::errorOccurred, this, &IndustrialMonitor::onSerialError);
+    //connect(m_serialConfig, &SerialConfigWidget::dataReceived, this, &IndustrialMonitor::onDataReceived);
 }
 
 IndustrialMonitor::~IndustrialMonitor()

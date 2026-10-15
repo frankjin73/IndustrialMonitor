@@ -5,7 +5,7 @@
 SerialConfigWidget::SerialConfigWidget(QWidget *parent)
 	:QWidget(parent)
 	,ui(new Ui::SerialConfigWidgetClass())
-	,m_serialPort(new QSerialPort(this))
+	, isOpen(false)
 {
 	ui->setupUi(this);
 
@@ -14,24 +14,13 @@ SerialConfigWidget::SerialConfigWidget(QWidget *parent)
 	setupParityOptions();
 	setupStopBitsOptions();
 
-	refreshPorts();
+	connect(ui->refreshButton, &QPushButton::clicked, this, &SerialConfigWidget::refreshPorts);
+	connect(ui->toggleButton, &QPushButton::clicked, this, &SerialConfigWidget::togglePort);
 
-    //连接信号与槽
-    connect(ui->refreshButton, &QPushButton::clicked, this, &SerialConfigWidget::refreshPorts);
-    connect(ui->toggleButton,&QPushButton::clicked, this,&SerialConfigWidget::togglePort);
-    connect(m_serialPort, &QSerialPort::readyRead, this, &SerialConfigWidget::onReadyRead);
 }
 
 SerialConfigWidget::~SerialConfigWidget() {
-	if (m_serialPort->isOpen()) {
-		m_serialPort->close();
-	}
 	delete ui;
-}
-
-bool SerialConfigWidget::isOpen() const
-{
-	return m_serialPort->isOpen();
 }
 
 QString SerialConfigWidget::currentPortName() const
@@ -44,78 +33,79 @@ qint32 SerialConfigWidget::currentBaudRate() const
 	return ui->baudRateComboBox->currentData().toInt();
 }
 
+qint32 SerialConfigWidget::currentDataBit() const
+{
+	return ui->dataBitsComboBox->currentData().toInt();
+}
+
+qint32 SerialConfigWidget::currentParity() const
+{
+	return ui->parityComboBox->currentData().toInt();
+}
+qint32 SerialConfigWidget::currentStopBits() const
+{
+	return ui->stopBitsComboBox->currentData().toInt();
+}
+
 void SerialConfigWidget::refreshPorts() {
-    //记住当前选中项
-    const QString currentPort = ui->portComboBox->currentData().toString();
+	//记住当前选中项
+	const QString currentPort = ui->portComboBox->currentData().toString();
 
-    ui->portComboBox->clear();
+	ui->portComboBox->clear();
 
-    const auto ports = QSerialPortInfo::availablePorts();
-    for (const QSerialPortInfo &info : ports) {
-        QString label = info.portName();
-        if (!info.description().isEmpty()) {
-            label += " (" + info.description() + ")";
-        }
-        ui->portComboBox->addItem(label, info.portName());
-    }
-    ui->portComboBox->setMinimumWidth(90);
-    ui->portComboBox->view()->setMinimumWidth(120);
-    ui->portComboBox->view()->setTextElideMode(Qt::ElideNone);
+	const auto ports = QSerialPortInfo::availablePorts();
+	for (const QSerialPortInfo& info : ports) {
+		QString label = info.portName();
+		if (!info.description().isEmpty()) {
+			label += " (" + info.description() + ")";
+		}
+		ui->portComboBox->addItem(label, info.portName());
+	}
+	ui->portComboBox->setMinimumWidth(90);
+	ui->portComboBox->view()->setMinimumWidth(120);
+	ui->portComboBox->view()->setTextElideMode(Qt::ElideNone);
 
-    if (ports.isEmpty()) {
-        ui->portComboBox->addItem("无可用串口", QString());
-    }
-    else {
-        //恢复之前选中的端口
-        int idx = ui->portComboBox->findData(currentPort);
-        if (idx >= 0)
-            ui->portComboBox->setCurrentIndex(idx);
-    }
+	if (ports.isEmpty()) {
+		ui->portComboBox->addItem("无可用串口", QString());
+	}
+	else {
+		//恢复之前选中的端口
+		int idx = ui->portComboBox->findData(currentPort);
+		if (idx >= 0)
+			ui->portComboBox->setCurrentIndex(idx);
+	}
 }
 
 void SerialConfigWidget::togglePort() {
-    if (m_serialPort->isOpen()) {
-        m_serialPort->close();
-        setUiEnabled(false);
-        ui->toggleButton->setText("打开串口");
-        emit portClosed();
-        return;
-    }
-
-    const QString portName = currentPortName();
-    if (portName.isEmpty()) {
-        QMessageBox::warning(this, "提示", "请先选择一个串口。");
-        return;
-    }
-
-    m_serialPort->setPortName(portName);
-    m_serialPort->setBaudRate(currentBaudRate());
-    m_serialPort->setDataBits(static_cast<QSerialPort::DataBits>(
-        ui->dataBitsComboBox->currentData().toInt()));
-    m_serialPort->setParity(static_cast<QSerialPort::Parity>(
-        ui->parityComboBox->currentData().toInt()));
-    m_serialPort->setStopBits(static_cast<QSerialPort::StopBits>(
-        ui->stopBitsComboBox->currentData().toInt()));
-    m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
-
-    if (!m_serialPort->open(QIODevice::ReadWrite)) {
-        QMessageBox::critical(this, "错误",
-            QString("无法打开 %1：%2")
-            .arg(portName, m_serialPort->errorString()));
-        emit errorOccurred(m_serialPort->errorString());
-        return;
-    }
-
-    setUiEnabled(true);
-    ui->toggleButton->setText("关闭串口");
-    emit portOpened(portName, currentBaudRate());
+	if (isOpen) {
+		qDebug() << "按下关闭按钮";
+		emit closeRequested();
+	}
+	else {
+		qDebug() << "按下打开按钮";
+		const QString portName = currentPortName();
+		if (portName.isEmpty()) {
+			QMessageBox::warning(this, "提示", "请先选择一个串口。");
+			return;
+		}
+		emit openRequested(portName, currentBaudRate(), currentDataBit(), currentParity(), currentStopBits());
+	}
 }
 
-void SerialConfigWidget::onReadyRead() {
-    const QByteArray data = m_serialPort->readAll();
-    if (!data.isEmpty()) {
-        emit dataReceived(data);
-    }
+void SerialConfigWidget::portOpened() {
+	ui->toggleButton->setText("关闭串口");
+	setUiEnabled(false);
+}
+
+void SerialConfigWidget::portClosed() {
+	ui->toggleButton->setText("打开串口");
+	setUiEnabled(true);
+}
+
+void SerialConfigWidget::errorOccurred(const QString& message) {
+	QMessageBox::critical(this, "错误",
+		QString("无法打开 %1：%2")
+		.arg(currentPortName(), message));
 }
 
 //初始化波特率
@@ -156,10 +146,10 @@ void SerialConfigWidget::setupStopBitsOptions() {
 
 //
 void SerialConfigWidget::setUiEnabled(bool open) {
-	ui->portComboBox->setEnabled(!open);
-	ui->baudRateComboBox->setEnabled(!open);
-	ui->dataBitsComboBox->setEnabled(!open);
-	ui->parityComboBox->setEnabled(!open);
-	ui->stopBitsComboBox->setEnabled(!open);
-	ui->refreshButton->setEnabled(!open);
+	ui->portComboBox->setEnabled(open);
+	ui->baudRateComboBox->setEnabled(open);
+	ui->dataBitsComboBox->setEnabled(open);
+	ui->parityComboBox->setEnabled(open);
+	ui->stopBitsComboBox->setEnabled(open);
+	ui->refreshButton->setEnabled(open);
 }

@@ -14,14 +14,19 @@ class SerialConfigWidget : public QWidget
 	Q_OBJECT
 
 public:
-	SerialConfigWidget(QWidget * arent = nullptr);
+	SerialConfigWidget(QWidget *parent = nullptr);
 	~SerialConfigWidget();
 
-	bool isOpen() const;
 	QString currentPortName() const;
 	qint32 currentBaudRate() const;
+	qint32 currentDataBit() const;
+	qint32 currentParity() const;
+	qint32 currentStopBits() const;
 
 signals:
+	void openRequested(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits);
+	void closeRequested();
+/*signals:
 	//串口打开成功
 	void portOpened(const QString &portName, qint32 baudRate);
 	//串口关闭
@@ -34,7 +39,17 @@ signals:
 private slots:
 	void refreshPorts();
 	void togglePort();
-	void onReadyRead();
+	void onReadyRead();*/
+
+private slots: 
+	void refreshPorts();
+	void togglePort();
+	//串口打开
+	void portOpened();
+	//串口关闭
+	void portClosed();
+	//串口打开时发生错误
+	void errorOccurred(const QString& message);
 
 private:
 	void setupBaudRateOptions();
@@ -44,7 +59,6 @@ private:
 	void setUiEnabled(bool open);
 
 	Ui::SerialConfigWidgetClass* ui;
-	QSerialPort* m_serialPort;
-
+	bool isOpen = false;
 };
 
