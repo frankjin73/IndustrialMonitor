@@ -17,12 +17,6 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
 
     m_serialWorker->moveToThread(m_serialThread);
     
-    //连接信号与槽
-    //connect(m_serialConfig, &SerialConfigWidget::portOpened, this, &IndustrialMonitor::onPortOpened);
-    //connect(m_serialConfig, &SerialConfigWidget::portClosed, this, &IndustrialMonitor::onPortClosed);
-    //connect(m_serialConfig, &SerialConfigWidget::errorOccurred, this, &IndustrialMonitor::onSerialError);
-    //connect(m_serialConfig, &SerialConfigWidget::dataReceived, this, &IndustrialMonitor::onDataReceived);
-
     //关闭串口
     connect(m_serialConfig, &SerialConfigWidget::closeRequested, m_serialWorker, &SerialWoker::closePort);
     //打开串口
@@ -59,8 +53,6 @@ IndustrialMonitor::~IndustrialMonitor()
         delete m_serialConfig;
         m_serialConfig = nullptr;
     }
-
-
 
     if (ui) {
         delete ui;
