@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
-    <Filter Include="Translation Files">
-      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
-      <Extensions>ts</Extensions>
-    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{48431309-9647-472f-a18d-dc95a4a59313}</UniqueIdentifier>
     </Filter>
@@ -21,6 +13,15 @@
     <Filter Include="src\thread">
       <UniqueIdentifier>{c6653e00-72fc-4cca-a526-c67765beb4cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ui\widgets">
+      <UniqueIdentifier>{2440ed10-4a36-4042-a38c-550543b98095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\model">
+      <UniqueIdentifier>{149012ae-0015-4983-9905-5d9813160ba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core">
+      <UniqueIdentifier>{d0de2972-93b7-4eed-bcd9-a985b81c1383}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -29,15 +30,18 @@
     <ClCompile Include="src\ui\IndustrialMonitor.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\SerialConfigWidget.cpp">
-      <Filter>src\ui</Filter>
-    </ClCompile>
     <ClCompile Include="src\thread\SerialWoker.cpp">
       <Filter>src\thread</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".gitignore" />
+    <ClCompile Include="src\ui\widgets\SerialConfigWidget.cpp">
+      <Filter>src\ui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\SensorData.cpp">
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\DataParser.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\IndustrialMonitor.qrc">
@@ -48,19 +52,27 @@
     <QtUic Include="src\ui\IndustrialMonitor.ui">
       <Filter>src\ui</Filter>
     </QtUic>
-    <QtUic Include="src\ui\SerialConfigWidget.ui">
-      <Filter>src\ui</Filter>
+    <QtUic Include="src\ui\widgets\SerialConfigWidget.ui">
+      <Filter>src\ui\widgets</Filter>
     </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\ui\IndustrialMonitor.h">
       <Filter>src\ui</Filter>
     </QtMoc>
-    <QtMoc Include="src\ui\SerialConfigWidget.h">
-      <Filter>src\ui</Filter>
-    </QtMoc>
     <QtMoc Include="src\thread\SerialWoker.h">
       <Filter>src\thread</Filter>
     </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ui\widgets\SerialConfigWidget.h">
+      <Filter>src\ui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\SensorData.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\DataParser.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
