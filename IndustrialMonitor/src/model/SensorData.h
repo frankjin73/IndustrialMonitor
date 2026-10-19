@@ -1,8 +1,10 @@
 #pragma once
 #include <qtypes.h>
 #include <qstring.h>
+#include <QDateTime>
 
-#define DATA_TYPE_TEMP_INT16  0x01
+#define DATA_TYPE_TEMP_INT16  0x01  //温度
+#define CMD_SENSOR_REPORT  0x01
 
 class SensorData
 {
@@ -15,13 +17,13 @@ class SensorData
 	*/
 public:
     SensorData();
-    SensorData(qint32 timestamp, qint8 deviceId,qint8 sensorId,qint8 dataType,qint16 value);
+    SensorData(QDateTime timestamp, quint8 deviceId,quint8 sensorId,quint8 dataType, double value);
     QString typeName() const;
 
-    qint32 timestamp;
-    qint8 deviceId;
-    qint8 sensorId;
-    qint8 dataType;
-    qint16 value;
+    QDateTime timestamp;
+    quint8 deviceId;
+    quint8 sensorId;
+    quint8 dataType;
+    double value;
 };
 

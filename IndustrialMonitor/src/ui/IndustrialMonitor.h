@@ -4,6 +4,7 @@
 #include "ui_IndustrialMonitor.h"
 #include <Qlabel>
 #include <QList>
+#include "SensorData.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -25,7 +26,7 @@ private slots:
     void onPortOpened(const QString& portName, qint32 baudRate);
     void onPortClosed();
     void onSerialError(const QString &message);
-    void onDataReceived(const QByteArray& data);
+    void ondataParsed(const QList<SensorData>& dataList);
 
 private:
     Ui::IndustrialMonitorClass *ui;

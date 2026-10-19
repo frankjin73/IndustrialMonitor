@@ -1,13 +1,13 @@
 #include "SensorData.h"
 
 SensorData::SensorData()
-	: timestamp(0)
+	: timestamp(QDateTime())
 	, deviceId(0)
 	, sensorId(0)
 	, dataType(0)
 	, value(0){
 }
-SensorData::SensorData(qint32 timestamp, qint8 deviceId, qint8 sensorId, qint8 dataType, qint16 value)
+SensorData::SensorData(QDateTime timestamp, quint8 deviceId, quint8 sensorId, quint8 dataType, double value)
 	: timestamp(timestamp)
 	, deviceId(deviceId)
 	, sensorId(sensorId)
@@ -17,7 +17,7 @@ SensorData::SensorData(qint32 timestamp, qint8 deviceId, qint8 sensorId, qint8 d
 
 
 QString SensorData::typeName() const {
-	if (value == DATA_TYPE_TEMP_INT16){
+	if (dataType == DATA_TYPE_TEMP_INT16){
 		return QString("温度");
 	}else {
 		return QString("未知数据类型");

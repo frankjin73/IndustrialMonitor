@@ -28,7 +28,9 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     connect(m_serialWorker, &SerialWoker::errorOccurred, this, &IndustrialMonitor::onSerialError);
     
     //处理收到的数据
-    connect(m_serialWorker, &SerialWoker::dataReceived, this, &IndustrialMonitor::onDataReceived);
+    //connect(m_serialWorker, &SerialWoker::dataReceived, this, &IndustrialMonitor::onDataReceived);
+    connect(m_serialWorker, &SerialWoker::dataParsed, this, &IndustrialMonitor::ondataParsed);
+
 
     //改变SerialConfigWidget的ui
     connect(m_serialWorker, &SerialWoker::portOpened, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portOpened(); });
@@ -40,6 +42,9 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
 IndustrialMonitor::~IndustrialMonitor()
 {
     if (m_serialThread->isRunning()) {
+        // 核心：使用 BlockingQueuedConnection 阻塞调用子线程的 closePort 槽
+        QMetaObject::invokeMethod(m_serialWorker, "closePort", Qt::BlockingQueuedConnection);
+
         m_serialThread->quit(); 
         m_serialThread->wait();
     }
@@ -84,13 +89,19 @@ void IndustrialMonitor::onSerialError(const QString& message) {
     m_statusLabel->setText("错误：" + message);
 }
 
-void IndustrialMonitor::onDataReceived(const QByteArray& data) {
-    // 把原始字节转成可读文本，追加到文本框
-    const QString text = QString::fromLatin1(data);
-    ui->rawDataTextEdit->moveCursor(QTextCursor::End);
-    ui->rawDataTextEdit->insertPlainText(text);
-
+void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
     static qint64 totalBytes = 0;
-    totalBytes += data.size();
-    m_statusLabel->setText(QString("已连接 | 累计接收 %1 字节").arg(totalBytes));
+
+    for (auto data : dataList) {
+        // 温度，追加到文本框
+
+        const QString text = QString::number(data.value)+"\n";
+        ui->rawDataTextEdit->moveCursor(QTextCursor::End);
+        ui->rawDataTextEdit->insertPlainText(text);
+
+        totalBytes += 15;   //目前是固定帧长
+        m_statusLabel->setText(QString("已连接 | 累计接收 %1 字节").arg(totalBytes));
+    }
+    
+    
 }

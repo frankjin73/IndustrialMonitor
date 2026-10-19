@@ -63,11 +63,11 @@
     <QtMoc Include="src\thread\SerialWoker.h">
       <Filter>src\thread</Filter>
     </QtMoc>
+    <QtMoc Include="src\ui\widgets\SerialConfigWidget.h">
+      <Filter>src\ui\widgets</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ui\widgets\SerialConfigWidget.h">
-      <Filter>src\ui\widgets</Filter>
-    </ClInclude>
     <ClInclude Include="src\model\SensorData.h">
       <Filter>src\model</Filter>
     </ClInclude>

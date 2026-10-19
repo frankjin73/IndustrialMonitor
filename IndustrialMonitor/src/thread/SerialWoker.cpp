@@ -2,8 +2,7 @@
 #include <QSerialPortInfo>
 
 SerialWoker::SerialWoker(QObject* parent)
-:QObject(parent)
-,m_serialPort(nullptr) {
+: QObject(parent){
     
 }
 
@@ -59,6 +58,8 @@ void SerialWoker::closePort() {
 void SerialWoker::onReadyRead() {
     const QByteArray data = m_serialPort->readAll();
     if (!data.isEmpty()) {
-        emit dataReceived(data);
+        m_parser.m_buffer.append(data);
+        emit dataParsed(m_parser.parse(data));
+        //emit dataReceived(data);
     }
 }
