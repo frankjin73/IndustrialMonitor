@@ -109,6 +109,7 @@
     <ClCompile Include="src\model\SensorData.cpp" />
     <ClCompile Include="src\thread\SerialWoker.cpp" />
     <ClCompile Include="src\ui\IndustrialMonitor.cpp" />
+    <ClCompile Include="src\ui\widgets\RealtimeChartWidget.cpp" />
     <ClCompile Include="src\ui\widgets\SerialConfigWidget.cpp" />
     <QtRcc Include="resources\IndustrialMonitor.qrc" />
     <QtUic Include="src\ui\IndustrialMonitor.ui" />
@@ -126,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="src\core\DataParser.h" />
     <ClInclude Include="src\model\SensorData.h" />
+    <QtMoc Include="src\ui\widgets\RealtimeChartWidget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

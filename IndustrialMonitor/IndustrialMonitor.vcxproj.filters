@@ -42,6 +42,9 @@
     <ClCompile Include="src\core\DataParser.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\widgets\RealtimeChartWidget.cpp">
+      <Filter>src\ui\widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\IndustrialMonitor.qrc">
@@ -64,6 +67,9 @@
       <Filter>src\thread</Filter>
     </QtMoc>
     <QtMoc Include="src\ui\widgets\SerialConfigWidget.h">
+      <Filter>src\ui\widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="src\ui\widgets\RealtimeChartWidget.h">
       <Filter>src\ui\widgets</Filter>
     </QtMoc>
   </ItemGroup>
