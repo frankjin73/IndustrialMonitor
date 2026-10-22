@@ -5,6 +5,7 @@
 #include <Qlabel>
 #include <QList>
 #include "SensorData.h"
+#include "RealtimeChartWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -34,5 +35,6 @@ private:
     SerialWoker *m_serialWorker;
     QThread* m_serialThread;
     QLabel *m_statusLabel = nullptr;
+    RealtimeChartWidget* m_realtimeChart;
 };
 

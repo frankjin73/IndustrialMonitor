@@ -10,6 +10,7 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     , m_serialConfig(new SerialConfigWidget(this))
     , m_serialWorker(new SerialWoker())
     , m_serialThread(new QThread(this))
+    , m_realtimeChart(new RealtimeChartWidget(ui->chartContainer))
 {
     ui->setupUi(this);
     this->resize(1200, 800);
@@ -67,6 +68,12 @@ IndustrialMonitor::~IndustrialMonitor()
 
 void IndustrialMonitor::initUI()
 {
+    // 将图表对象设置到QVBoxLayout上进行显示
+    QVBoxLayout* layout_chartView = new QVBoxLayout(ui->chartContainer);
+    layout_chartView->addWidget(m_realtimeChart->m_chartView);
+    layout_chartView->setContentsMargins(0, 0, 0, 0);
+    ui->chartContainer->setLayout(layout_chartView);
+
     //初始化串口设置模块
     auto layout = new QVBoxLayout(ui->serialConfigContainer);
     layout->setContentsMargins(0, 0, 0, 0);
