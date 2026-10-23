@@ -100,6 +100,22 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
     static qint64 totalBytes = 0;
 
     for (auto data : dataList) {
+
+        qreal x = static_cast<qreal>(data.timestamp.toMSecsSinceEpoch());
+        qreal y = data.value;
+        m_realtimeChart->m_lineSeries->append(x, y);
+       // m_realtimeChart->m_lineSeries->append(static_cast<qreal>(data.timestamp.toMSecsSinceEpoch()), static_cast<qreal>(data.value));
+       
+        int exceedingPoints = m_realtimeChart->m_lineSeries->count() - MAX_POINTS;
+        if (exceedingPoints > 0) {
+            m_realtimeChart->m_lineSeries->removePoints(0, exceedingPoints);
+        }
+
+        QDateTime now = QDateTime::currentDateTime();
+        QDateTime minTime = now.addSecs(-10);
+        QDateTime maxTime = now;
+        m_realtimeChart->m_axisX->setRange(minTime, maxTime);
+
         // 温度，追加到文本框
 
         const QString text = QString::number(data.value)+"\n";
