@@ -34,6 +34,9 @@
       <string>实时监控</string>
      </attribute>
      <widget class="QTableWidget" name="dataTableWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>0</x>

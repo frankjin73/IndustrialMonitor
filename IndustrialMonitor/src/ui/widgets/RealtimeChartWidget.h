@@ -7,9 +7,6 @@
 #include <QDateTimeAxis >
 #include <QDateTime>
 
-//限制点数，防止内存爆炸和卡顿
-#define MAX_POINTS 100
-
 class RealtimeChartWidget :
     public QWidget
 {

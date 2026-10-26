@@ -28,6 +28,7 @@ private slots:
     void onPortClosed();
     void onSerialError(const QString &message);
     void ondataParsed(const QList<SensorData>& dataList);
+    void onPlotTimeout();
 
 private:
     Ui::IndustrialMonitorClass *ui;
@@ -36,5 +37,7 @@ private:
     QThread* m_serialThread;
     QLabel *m_statusLabel = nullptr;
     RealtimeChartWidget* m_realtimeChart;
+    QList<SensorData> m_dataList;
+    QTimer* m_plotTimer;
 };
 

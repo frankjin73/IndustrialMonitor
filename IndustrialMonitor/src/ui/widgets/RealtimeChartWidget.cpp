@@ -21,6 +21,7 @@ RealtimeChartWidget::RealtimeChartWidget(QWidget* parent)
 	m_axisY->setRange(20,31);
 
 	m_lineSeries->setName("实时数据曲线");
+	m_lineSeries->setUseOpenGL(true);
 	m_lineSeries->attachAxis(m_axisX);
 	m_lineSeries->attachAxis(m_axisY);
 }
