@@ -125,7 +125,7 @@ def main():
 
             print(f"[发送] {time.strftime('%H:%M:%S', time.localtime(ts))} "
                   f"T={temperature:.2f}℃  frame={frame.hex(' ').upper()}")
-            time.sleep(0.01)
+            time.sleep(1)
 
     except KeyboardInterrupt:
         print("\n[模拟器] 已停止")
