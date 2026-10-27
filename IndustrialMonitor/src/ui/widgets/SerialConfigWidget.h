@@ -28,23 +28,11 @@ public:
 signals:
 	void openRequested(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits);
 	void closeRequested();
-/*signals:
-	//串口打开成功
-	void portOpened(const QString &portName, qint32 baudRate);
-	//串口关闭
-	void portClosed();
-	//出错
-	void errorOccurred(const QString &message);
-	//串口收到数据
-	void dataReceived(const QByteArray &data);
-
-private slots:
-	void refreshPorts();
-	void togglePort();
-	void onReadyRead();*/
 
 public slots: 
+	//刷新串口
 	void refreshPorts();
+	//发送打开or关闭串口的请求信号
 	void togglePort();
 	//串口打开
 	void portOpened();

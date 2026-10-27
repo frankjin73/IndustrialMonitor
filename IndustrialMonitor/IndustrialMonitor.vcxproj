@@ -66,13 +66,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -104,25 +104,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\DataParser.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\model\SensorData.cpp" />
     <ClCompile Include="src\thread\SerialWoker.cpp" />
     <ClCompile Include="src\ui\IndustrialMonitor.cpp" />
-    <ClCompile Include="src\ui\SerialConfigWidget.cpp" />
+    <ClCompile Include="src\ui\widgets\RealtimeChartWidget.cpp" />
+    <ClCompile Include="src\ui\widgets\SerialConfigWidget.cpp" />
     <QtRcc Include="resources\IndustrialMonitor.qrc" />
     <QtUic Include="src\ui\IndustrialMonitor.ui" />
-    <QtUic Include="src\ui\SerialConfigWidget.ui" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".gitignore" />
+    <QtUic Include="src\ui\widgets\SerialConfigWidget.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\ui\IndustrialMonitor.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\ui\SerialConfigWidget.h" />
+    <QtMoc Include="src\thread\SerialWoker.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\thread\SerialWoker.h" />
+    <QtMoc Include="src\ui\widgets\SerialConfigWidget.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\core\DataParser.h" />
+    <ClInclude Include="src\model\SensorData.h" />
+    <QtMoc Include="src\ui\widgets\RealtimeChartWidget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

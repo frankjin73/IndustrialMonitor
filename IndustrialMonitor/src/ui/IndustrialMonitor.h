@@ -4,6 +4,8 @@
 #include "ui_IndustrialMonitor.h"
 #include <Qlabel>
 #include <QList>
+#include "SensorData.h"
+#include "RealtimeChartWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -25,7 +27,8 @@ private slots:
     void onPortOpened(const QString& portName, qint32 baudRate);
     void onPortClosed();
     void onSerialError(const QString &message);
-    void onDataReceived(const QByteArray& data);
+    void ondataParsed(const QList<SensorData>& dataList);
+    void onPlotTimeout();
 
 private:
     Ui::IndustrialMonitorClass *ui;
@@ -33,5 +36,8 @@ private:
     SerialWoker *m_serialWorker;
     QThread* m_serialThread;
     QLabel *m_statusLabel = nullptr;
+    RealtimeChartWidget* m_realtimeChart;
+    QList<SensorData> m_dataList;
+    QTimer* m_plotTimer;
 };
 

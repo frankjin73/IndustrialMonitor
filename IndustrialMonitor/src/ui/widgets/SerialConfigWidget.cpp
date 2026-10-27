@@ -132,21 +132,18 @@ void SerialConfigWidget::setupDataBitsOptions() {
 	ui->dataBitsComboBox->setCurrentIndex(3);//默认8
 }
 
-//
 void SerialConfigWidget::setupParityOptions() {
 	ui->parityComboBox->addItem("None", QSerialPort::NoParity);
 	ui->parityComboBox->addItem("Even", QSerialPort::EvenParity);
 	ui->parityComboBox->addItem("Odd", QSerialPort::OddParity);
 }
 
-//
 void SerialConfigWidget::setupStopBitsOptions() {
 	ui->stopBitsComboBox->addItem("1", QSerialPort::OneStop);
 	ui->stopBitsComboBox->addItem("1.5", QSerialPort::OneAndHalfStop);
 	ui->stopBitsComboBox->addItem("2", QSerialPort::TwoStop);
 }
 
-//
 void SerialConfigWidget::setUiEnabled(bool open) {
 	ui->portComboBox->setEnabled(open);
 	ui->baudRateComboBox->setEnabled(open);
