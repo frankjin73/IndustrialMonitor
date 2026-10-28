@@ -6,6 +6,9 @@
 #include <QList>
 #include "SensorData.h"
 #include "RealtimeChartWidget.h"
+#include "DatabaseManager.h"
+#include "DataRepository.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -39,5 +42,7 @@ private:
     RealtimeChartWidget* m_realtimeChart;
     QList<SensorData> m_dataList;
     QTimer* m_plotTimer;
+    DatabaseManager* m_dbManager;
+    DataRepository* m_repository;
 };
 

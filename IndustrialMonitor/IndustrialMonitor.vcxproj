@@ -66,13 +66,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -107,6 +107,8 @@
     <ClCompile Include="src\core\DataParser.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model\SensorData.cpp" />
+    <ClCompile Include="src\storage\DatabaseManager.cpp" />
+    <ClCompile Include="src\storage\DataRepository.cpp" />
     <ClCompile Include="src\thread\SerialWoker.cpp" />
     <ClCompile Include="src\ui\IndustrialMonitor.cpp" />
     <ClCompile Include="src\ui\widgets\RealtimeChartWidget.cpp" />
@@ -127,6 +129,8 @@
   <ItemGroup>
     <ClInclude Include="src\core\DataParser.h" />
     <ClInclude Include="src\model\SensorData.h" />
+    <ClInclude Include="src\storage\DatabaseManager.h" />
+    <ClInclude Include="src\storage\DataRepository.h" />
     <QtMoc Include="src\ui\widgets\RealtimeChartWidget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

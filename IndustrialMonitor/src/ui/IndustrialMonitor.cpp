@@ -12,6 +12,8 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     , m_serialThread(new QThread(this))
     , m_realtimeChart(new RealtimeChartWidget(ui->chartContainer))
     , m_plotTimer(new QTimer(this))
+    , m_dbManager(new DatabaseManager())
+    , m_repository(new DataRepository(m_dbManager->connectionName()))
 {
     ui->setupUi(this);
     this->resize(1200, 800);
@@ -65,6 +67,16 @@ IndustrialMonitor::~IndustrialMonitor()
         m_serialConfig = nullptr;
     }
 
+    if (m_dbManager) {
+        delete m_dbManager;
+        m_dbManager = nullptr;
+    }
+
+    if (m_repository) {
+        delete m_repository;
+        m_repository = nullptr;
+    }
+
     if (ui) {
         delete ui;
         ui = nullptr;
@@ -115,6 +127,9 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
     m_dataList.append(dataList);
 
     for (const auto &data : dataList) {
+        //存入sensor_data表
+        m_repository->insertSensorData(data);
+
         // 温度，追加到文本框
         const QString text = QString::number(data.value)+"\n";
         ui->rawDataTextEdit->moveCursor(QTextCursor::End);

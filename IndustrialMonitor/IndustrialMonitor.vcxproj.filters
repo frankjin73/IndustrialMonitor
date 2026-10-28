@@ -22,6 +22,9 @@
     <Filter Include="src\core">
       <UniqueIdentifier>{d0de2972-93b7-4eed-bcd9-a985b81c1383}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\storage">
+      <UniqueIdentifier>{54308a73-4dd9-4a4e-a225-2c8973c72fa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -44,6 +47,12 @@
     </ClCompile>
     <ClCompile Include="src\ui\widgets\RealtimeChartWidget.cpp">
       <Filter>src\ui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\DatabaseManager.cpp">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\DataRepository.cpp">
+      <Filter>src\storage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="src\core\DataParser.h">
       <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\DatabaseManager.h">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\DataRepository.h">
+      <Filter>src\storage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
