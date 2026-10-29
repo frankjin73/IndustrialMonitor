@@ -23,7 +23,7 @@ QList<SensorData> DataRepository::querySensorData(qint64 fromMs, qint64 toMs) {
 	QList<SensorData> dataList;
 	QSqlDatabase db = QSqlDatabase::database(m_connName);
 	QSqlQuery query(db);
-	query.prepare("SELECT timestamp,device_id,sensor_id,data_type,value FROM sensor_data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC");
+	query.prepare("SELECT timestamp,device_id,sensor_id,data_type,value FROM sensor_data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC LIMIT 10000");
 	query.addBindValue(fromMs);
 	query.addBindValue(toMs);
 

@@ -32,6 +32,8 @@ private slots:
     void onSerialError(const QString &message);
     void ondataParsed(const QList<SensorData>& dataList);
     void onPlotTimeout();
+    void onQueryHistoryData();
+    void onExportToCsv();
 
 private:
     Ui::IndustrialMonitorClass *ui;
