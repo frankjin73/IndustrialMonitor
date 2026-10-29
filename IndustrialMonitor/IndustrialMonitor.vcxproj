@@ -104,8 +104,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\AlarmManager.cpp" />
     <ClCompile Include="src\core\DataParser.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\model\AlarmRecord.cpp" />
     <ClCompile Include="src\model\SensorData.cpp" />
     <ClCompile Include="src\storage\DatabaseManager.cpp" />
     <ClCompile Include="src\storage\DataRepository.cpp" />
@@ -127,7 +129,9 @@
     <QtMoc Include="src\ui\widgets\SerialConfigWidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="src\core\AlarmManager.h" />
     <ClInclude Include="src\core\DataParser.h" />
+    <ClInclude Include="src\model\AlarmRecord.h" />
     <ClInclude Include="src\model\SensorData.h" />
     <ClInclude Include="src\storage\DatabaseManager.h" />
     <ClInclude Include="src\storage\DataRepository.h" />

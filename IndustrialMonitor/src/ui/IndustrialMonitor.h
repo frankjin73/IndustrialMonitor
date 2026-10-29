@@ -8,7 +8,7 @@
 #include "RealtimeChartWidget.h"
 #include "DatabaseManager.h"
 #include "DataRepository.h"
-
+#include "AlarmManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -46,5 +46,6 @@ private:
     QTimer* m_plotTimer;
     DatabaseManager* m_dbManager;
     DataRepository* m_repository;
+    AlarmManager* m_alarmManager;
 };
 

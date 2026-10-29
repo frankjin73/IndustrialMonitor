@@ -14,6 +14,7 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     , m_plotTimer(new QTimer(this))
     , m_dbManager(new DatabaseManager())
     , m_repository(new DataRepository(m_dbManager->connectionName()))
+    , m_alarmManager(new AlarmManager())
 {
     ui->setupUi(this);
     this->resize(1200, 800);
@@ -119,7 +120,8 @@ void IndustrialMonitor::initUI()
     ui->historyTableWidget->setAlternatingRowColors(true);  //隔行变色，好看。
     //时间列宽度随内容调整，其余列宽自适应
     auto* header = ui->historyTableWidget->horizontalHeader();
-    header->setSectionResizeMode(0, QHeaderView::ResizeToContents);  // 时间列
+    ui->historyTableWidget->setColumnWidth(0, 120);
+    //header->setSectionResizeMode(0, QHeaderView::ResizeToContents);  // 时间列
     header->setSectionResizeMode(1, QHeaderView::Stretch);
     header->setSectionResizeMode(2, QHeaderView::Stretch);
     header->setSectionResizeMode(3, QHeaderView::Stretch);
@@ -150,6 +152,19 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
     for (const auto &data : dataList) {
         //存入sensor_data表
         m_repository->insertSensorData(data);
+        
+        //检测传感器状态
+        auto result = m_alarmManager->check(data);
+        switch (result) {
+        case AlarmResult::Triggered:
+                   // 插表格 + 入库
+            break;
+        case AlarmResult::Recovered:
+                // 就是上面那个倒序扫
+            break;
+        case AlarmResult::Normal:
+            break;
+        }
 
         // 温度，追加到文本框
         const QString text = QString::number(data.value)+"\n";
