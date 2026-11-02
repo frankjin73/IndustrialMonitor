@@ -14,6 +14,7 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     , m_plotTimer(new QTimer(this))
     , m_dbManager(new DatabaseManager())
     , m_repository(new DataRepository(m_dbManager->connectionName()))
+    , m_alarmManager(new AlarmManager())
 {
     ui->setupUi(this);
     this->resize(1200, 800);
@@ -43,6 +44,9 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     connect(m_serialWorker, &SerialWoker::portOpened, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portOpened(); });
     connect(m_serialWorker, &SerialWoker::portClosed, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portClosed(); });
     
+    //清空报警记录
+    connect(ui->clearAlarmButton, &QPushButton::clicked, this, &IndustrialMonitor::onclearAlarmRecords);
+
     //历史数据查询
     connect(ui->queryButton, &QPushButton::clicked, this, &IndustrialMonitor::onQueryHistoryData);
     //历史数据导出
@@ -107,9 +111,16 @@ void IndustrialMonitor::initUI()
     //暂时不显示
     ui->dataTableWidget->hide();
     ui->rawDataGroupBox->hide();
-    QDateTime now = QDateTime::currentDateTime();
+
+    //报价记录表
+    ui->alarmTableWidget->setColumnWidth(0, 150);
+  //  ui->alarmTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->alarmTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers); //只读
+    ui->alarmTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);    //整行选中。
+    ui->alarmTableWidget->setAlternatingRowColors(true);  //隔行变色，好看。
 
     //历史数据查询范围默认从当前时间到一小时前
+    QDateTime now = QDateTime::currentDateTime();
     ui->startTimeEdit->setDateTime(now.addSecs(-3600));
     ui->endTimeEdit->setDateTime(now);
 
@@ -119,7 +130,8 @@ void IndustrialMonitor::initUI()
     ui->historyTableWidget->setAlternatingRowColors(true);  //隔行变色，好看。
     //时间列宽度随内容调整，其余列宽自适应
     auto* header = ui->historyTableWidget->horizontalHeader();
-    header->setSectionResizeMode(0, QHeaderView::ResizeToContents);  // 时间列
+    ui->historyTableWidget->setColumnWidth(0, 150);
+    //header->setSectionResizeMode(0, QHeaderView::ResizeToContents);  // 时间列
     header->setSectionResizeMode(1, QHeaderView::Stretch);
     header->setSectionResizeMode(2, QHeaderView::Stretch);
     header->setSectionResizeMode(3, QHeaderView::Stretch);
@@ -150,6 +162,56 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
     for (const auto &data : dataList) {
         //存入sensor_data表
         m_repository->insertSensorData(data);
+        
+        //检测传感器状态
+        auto result = m_alarmManager->check(data);
+        switch (result) {
+        case AlarmResult::Triggered:{
+            // 报警信息存入数据库
+            QString message = m_alarmManager->getAlarmMessage(data.sensorId) + QString::number(data.value, 'f', 2);
+            auto record = AlarmRecord(data.timestamp, data.sensorId, message);
+            m_repository->insertAlarmRecord(record);
+
+            {   // 报警信息插表格
+                ui->alarmTableWidget->insertRow(0);
+                ui->alarmTableWidget->setUpdatesEnabled(false);
+                ui->alarmTableWidget->setSortingEnabled(false);
+
+                //第0列：时间
+                auto timeStr = record.timestamp.toString("yyyy-MM-dd HH:mm:ss");
+                QTableWidgetItem* itemTime = new QTableWidgetItem(timeStr);
+                itemTime->setTextAlignment(Qt::AlignCenter);
+                ui->alarmTableWidget->setItem(0, 0, itemTime);
+
+                //第1列：传感器ID
+                QTableWidgetItem* itemSensor = new QTableWidgetItem(QString::number(record.sensorId));
+                itemSensor->setTextAlignment(Qt::AlignCenter);
+                ui->alarmTableWidget->setItem(0, 1, itemSensor);
+
+                //第2列：类型
+                QTableWidgetItem* itemMessage = new QTableWidgetItem(record.message);
+                itemMessage->setTextAlignment(Qt::AlignCenter);
+                ui->alarmTableWidget->setItem(0, 2, itemMessage);
+
+                int maxRows = 100;
+                if (ui->alarmTableWidget->rowCount() > maxRows) {
+                    ui->alarmTableWidget->removeRow(100); // 删掉第 100 行（最旧的数据）
+                }
+
+                ui->alarmTableWidget->setSortingEnabled(true);
+                ui->alarmTableWidget->setUpdatesEnabled(true);
+            }
+            updateAlarmCountLabel();
+
+
+            break;
+        }
+        case AlarmResult::Recovered:
+                // 就是上面那个倒序扫
+            break;
+        case AlarmResult::Normal:
+            break;
+        }
 
         // 温度，追加到文本框
         const QString text = QString::number(data.value)+"\n";
@@ -285,4 +347,15 @@ void IndustrialMonitor::onExportToCsv() {
     }
     file.close();
     QMessageBox::information(this, "成功", "数据导出完成！");
+}
+
+void IndustrialMonitor::updateAlarmCountLabel() {
+    ui->alarmStatusLabel->setText(QString("当前报警数: %1 条").arg(ui->alarmTableWidget->rowCount()));
+}
+
+void IndustrialMonitor::onclearAlarmRecords() {
+    ui->alarmTableWidget->clearContents();    // 清空内容，保留表头
+    ui->alarmTableWidget->setRowCount(0);
+
+    updateAlarmCountLabel();
 }

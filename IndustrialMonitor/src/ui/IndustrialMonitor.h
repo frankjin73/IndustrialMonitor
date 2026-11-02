@@ -8,7 +8,7 @@
 #include "RealtimeChartWidget.h"
 #include "DatabaseManager.h"
 #include "DataRepository.h"
-
+#include "AlarmManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -25,6 +25,7 @@ public:
     IndustrialMonitor(QWidget *parent = nullptr);
     ~IndustrialMonitor();
     void initUI();
+    void updateAlarmCountLabel();
 
 private slots:
     void onPortOpened(const QString& portName, qint32 baudRate);
@@ -34,6 +35,7 @@ private slots:
     void onPlotTimeout();
     void onQueryHistoryData();
     void onExportToCsv();
+    void onclearAlarmRecords();
 
 private:
     Ui::IndustrialMonitorClass *ui;
@@ -46,5 +48,6 @@ private:
     QTimer* m_plotTimer;
     DatabaseManager* m_dbManager;
     DataRepository* m_repository;
+    AlarmManager* m_alarmManager;
 };
 

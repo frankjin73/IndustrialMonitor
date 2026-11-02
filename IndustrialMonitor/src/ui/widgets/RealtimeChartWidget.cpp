@@ -18,7 +18,7 @@ RealtimeChartWidget::RealtimeChartWidget(QWidget* parent)
 	
 	QDateTime now = QDateTime::currentDateTime();
 	m_axisX->setRange(now.addSecs(-10), now);//X 轴范围设为最近 10 秒。
-	m_axisY->setRange(20,31);
+	m_axisY->setRange(20,35);
 
 	m_lineSeries->setName("实时数据曲线");
 	m_lineSeries->setUseOpenGL(true);

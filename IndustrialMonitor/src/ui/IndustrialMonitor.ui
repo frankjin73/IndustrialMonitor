@@ -22,12 +22,12 @@
      <rect>
       <x>260</x>
       <y>10</y>
-      <width>666</width>
-      <height>295</height>
+      <width>672</width>
+      <height>299</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="realtimeTab">
      <attribute name="title">
@@ -89,33 +89,70 @@
      <attribute name="title">
       <string>报警记录</string>
      </attribute>
-     <widget class="QTableWidget" name="alarmTableWidget">
+     <widget class="QWidget" name="">
       <property name="geometry">
        <rect>
-        <x>-11</x>
-        <y>-1</y>
+        <x>10</x>
+        <y>10</y>
         <width>651</width>
-        <height>311</height>
+        <height>246</height>
        </rect>
       </property>
-      <attribute name="horizontalHeaderStretchLastSection">
-       <bool>true</bool>
-      </attribute>
-      <column>
-       <property name="text">
-        <string>时间</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>传感器</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>报警信息</string>
-       </property>
-      </column>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="clearAlarmButton">
+           <property name="text">
+            <string>清空</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="alarmTableWidget">
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>时间</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>传感器</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>报警信息</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="alarmStatusLabel">
+         <property name="text">
+          <string>当前报警数: 0 条</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="historyTab">
