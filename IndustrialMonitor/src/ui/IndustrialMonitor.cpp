@@ -369,7 +369,8 @@ void IndustrialMonitor::onclearAlarmRecords() {
 }
 
 void IndustrialMonitor::showAlarmSettingDialog() {
-    AlarmSettingDialog dlg(this);
+   // AlarmSettingDialog dlg(this, m_configManager->loadThresholds());
+    AlarmSettingDialog dlg(this, getDefaultThresholds());
 
     switch (dlg.exec()) {
     case QDialog::Accepted:

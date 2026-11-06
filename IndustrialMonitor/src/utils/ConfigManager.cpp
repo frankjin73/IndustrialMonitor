@@ -74,7 +74,7 @@ QMap<quint8, Threshold> ConfigManager::loadThresholds() const {
     m_settings->beginGroup("Alarm");
 
     for (int ch = 1; ch <= MAX_SENSOR_QUANTITY; ++ch) {
-        m_settings->beginGroup(QString("Channel_%1").arg(ch));
+        m_settings->beginGroup(QString("%1").arg(ch));
 
         // 如果这个组里连一个键都没有，说明没配置这个通道，直接跳过
         if (!m_settings->contains("name")) {
