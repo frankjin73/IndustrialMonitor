@@ -11,7 +11,9 @@ RealtimeChartWidget::RealtimeChartWidget(QWidget* parent)
 	m_chart->addAxis(m_axisX, Qt::AlignBottom);
 	m_chart->addAxis(m_axisY, Qt::AlignLeft);
 	m_chart->setAnimationOptions(QChart::SeriesAnimations);
-
+	m_chart->setMargins(QMargins(0, 0, 0, 0)); // 清除图表内部的四周留白
+	m_chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	
 	m_axisX->setFormat("hh:mm:ss");
 	m_axisX->setTitleText("时间");
 	m_axisY->setTitleText("数据");

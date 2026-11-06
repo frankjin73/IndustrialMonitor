@@ -19,7 +19,7 @@ bool SerialWoker::isOpen() const
     return m_serialPort->isOpen();
 }
 
-void SerialWoker::openPort(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits) {
+void SerialWoker::openPort(const SerialConfig& cfg) {
     if (!m_serialPort) {
         m_serialPort = new QSerialPort(this);
     }
@@ -30,13 +30,13 @@ void SerialWoker::openPort(const QString& portName, qint32 baudRate, qint8 dataB
 
     connect(m_serialPort, &QSerialPort::readyRead, this, &SerialWoker::onReadyRead);
 
-    m_serialPort->setPortName(portName);
-    m_serialPort->setBaudRate(baudRate);
-    m_serialPort->setDataBits(static_cast<QSerialPort::DataBits>(dataBit));
+    m_serialPort->setPortName(cfg.portName);
+    m_serialPort->setBaudRate(cfg.baudRate);
+    m_serialPort->setDataBits(static_cast<QSerialPort::DataBits>(cfg.dataBit));
     m_serialPort->setParity(static_cast<QSerialPort::Parity>(
-        parity));
+        cfg.parity));
     m_serialPort->setStopBits(static_cast<QSerialPort::StopBits>(
-        stopBits));
+        cfg.stopBits));
     m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
 
     if (!m_serialPort->open(QIODevice::ReadWrite)) {
@@ -44,7 +44,7 @@ void SerialWoker::openPort(const QString& portName, qint32 baudRate, qint8 dataB
         return;
     }
 
-    emit portOpened(portName, baudRate);
+    emit portOpened(cfg.portName, cfg.baudRate);
 }
 
 void SerialWoker::closePort() {

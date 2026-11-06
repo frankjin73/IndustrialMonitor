@@ -22,20 +22,42 @@
      <rect>
       <x>260</x>
       <y>10</y>
-      <width>672</width>
-      <height>299</height>
+      <width>654</width>
+      <height>295</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="realtimeTab">
      <attribute name="title">
       <string>实时监控</string>
      </attribute>
      <layout class="QFormLayout" name="formLayout_2">
+      <property name="horizontalSpacing">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item row="0" column="0" colspan="2">
-       <widget class="QWidget" name="chartContainer" native="true"/>
+       <widget class="QWidget" name="chartContainer" native="true">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QTableWidget" name="dataTableWidget">
@@ -89,78 +111,99 @@
      <attribute name="title">
       <string>报警记录</string>
      </attribute>
-     <widget class="QWidget" name="">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>651</width>
-        <height>246</height>
-       </rect>
+     <layout class="QFormLayout" name="formLayout_3">
+      <property name="horizontalSpacing">
+       <number>6</number>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QPushButton" name="clearAlarmButton">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="0" colspan="2">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="clearAlarmButton">
+            <property name="text">
+             <string>清空</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="alarmTableWidget">
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <column>
            <property name="text">
-            <string>清空</string>
+            <string>时间</string>
            </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+          </column>
+          <column>
+           <property name="text">
+            <string>传感器</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
+          </column>
+          <column>
+           <property name="text">
+            <string>报警信息</string>
            </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QTableWidget" name="alarmTableWidget">
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
-         <column>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="alarmStatusLabel">
           <property name="text">
-           <string>时间</string>
+           <string>当前报警数: 0 条</string>
           </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>传感器</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>报警信息</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="alarmStatusLabel">
-         <property name="text">
-          <string>当前报警数: 0 条</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
     <widget class="QWidget" name="historyTab">
      <attribute name="title">
       <string>历史查询</string>
      </attribute>
      <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="0" colspan="2">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -367,6 +410,9 @@
    </property>
   </action>
   <action name="actionSettings">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::DocumentProperties"/>
+   </property>
    <property name="text">
     <string>设置</string>
    </property>

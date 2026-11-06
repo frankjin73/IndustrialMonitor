@@ -9,6 +9,8 @@
 #include "DatabaseManager.h"
 #include "DataRepository.h"
 #include "AlarmManager.h"
+#include "AlarmSettingDialog.h"
+#include "ConfigManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -36,9 +38,11 @@ private slots:
     void onQueryHistoryData();
     void onExportToCsv();
     void onclearAlarmRecords();
+    void showAlarmSettingDialog();
 
 private:
     Ui::IndustrialMonitorClass *ui;
+    ConfigManager* m_configManager;
     SerialConfigWidget *m_serialConfig;
     SerialWoker *m_serialWorker;
     QThread* m_serialThread;

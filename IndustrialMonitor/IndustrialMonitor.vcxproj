@@ -66,13 +66,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src\utils;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src\utils;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -113,10 +113,13 @@
     <ClCompile Include="src\storage\DataRepository.cpp" />
     <ClCompile Include="src\thread\SerialWoker.cpp" />
     <ClCompile Include="src\ui\IndustrialMonitor.cpp" />
+    <ClCompile Include="src\ui\widgets\AlarmSettingDialog.cpp" />
     <ClCompile Include="src\ui\widgets\RealtimeChartWidget.cpp" />
     <ClCompile Include="src\ui\widgets\SerialConfigWidget.cpp" />
+    <ClCompile Include="src\utils\ConfigManager.cpp" />
     <QtRcc Include="resources\IndustrialMonitor.qrc" />
     <QtUic Include="src\ui\IndustrialMonitor.ui" />
+    <QtUic Include="src\ui\widgets\AlarmSettingDialog.ui" />
     <QtUic Include="src\ui\widgets\SerialConfigWidget.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +132,10 @@
     <QtMoc Include="src\ui\widgets\SerialConfigWidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\model\SerialConfig.h" />
+    <ClInclude Include="src\model\Threshold.h" />
+    <ClInclude Include="src\utils\ConfigManager.h" />
+    <QtMoc Include="src\ui\widgets\AlarmSettingDialog.h" />
     <QtMoc Include="src\core\AlarmManager.h" />
     <ClInclude Include="src\core\DataParser.h" />
     <ClInclude Include="src\model\AlarmRecord.h" />

@@ -1,9 +1,14 @@
 #include "AlarmManager.h"
 
-AlarmManager::AlarmManager(QObject* parent)
+AlarmManager::AlarmManager(QObject* parent, const QMap<quint8, Threshold>& Thresholds)
     : QObject(parent) {
-    m_alarmState.insert(1,false);
-    m_sensorThreshold.insert(1, { 25, 30, true ,"温度"});
+    //m_alarmState.insert(1,false);
+    //m_sensorThreshold.insert(1, { 25, 30, true ,"温度"});
+    m_sensorThreshold = Thresholds;
+
+    for (auto it = m_sensorThreshold.cbegin(); it != m_sensorThreshold.cend(); ++it) {
+        m_alarmState.insert(it.key(), false);
+    }
 }
 
 void AlarmManager::setThreshold(quint8 sensorId, double min, double max, QString sensorName) {

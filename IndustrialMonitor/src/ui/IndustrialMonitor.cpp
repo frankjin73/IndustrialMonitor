@@ -7,14 +7,15 @@
 IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::IndustrialMonitorClass())
-    , m_serialConfig(new SerialConfigWidget(this))
+    , m_configManager(new ConfigManager())
+    , m_serialConfig(new SerialConfigWidget(this, m_configManager->loadSerialConfig()))
     , m_serialWorker(new SerialWoker())
     , m_serialThread(new QThread(this))
     , m_realtimeChart(new RealtimeChartWidget(ui->chartContainer))
     , m_plotTimer(new QTimer(this))
     , m_dbManager(new DatabaseManager())
     , m_repository(new DataRepository(m_dbManager->connectionName()))
-    , m_alarmManager(new AlarmManager())
+    , m_alarmManager(new AlarmManager(this, m_configManager->loadThresholds()))
 {
     ui->setupUi(this);
     this->resize(1200, 800);
@@ -44,6 +45,10 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     connect(m_serialWorker, &SerialWoker::portOpened, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portOpened(); });
     connect(m_serialWorker, &SerialWoker::portClosed, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portClosed(); });
     
+    
+    //弹出传感器阈值设置对话框
+    connect(ui->actionSettings,&QAction::triggered, this,&IndustrialMonitor::showAlarmSettingDialog);
+
     //清空报警记录
     connect(ui->clearAlarmButton, &QPushButton::clicked, this, &IndustrialMonitor::onclearAlarmRecords);
 
@@ -112,7 +117,7 @@ void IndustrialMonitor::initUI()
     ui->dataTableWidget->hide();
     ui->rawDataGroupBox->hide();
 
-    //报价记录表
+    //报警记录表
     ui->alarmTableWidget->setColumnWidth(0, 150);
   //  ui->alarmTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->alarmTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers); //只读
@@ -139,6 +144,9 @@ void IndustrialMonitor::initUI()
 }
 
 void IndustrialMonitor::onPortOpened(const QString& portName, qint32 baudRate) {
+    //讲串口设置的参数存到ini文件
+    m_configManager->saveSerialConfig(m_serialConfig->m_serialConfig);
+    
     m_statusLabel->setText("已连接");
     m_realtimeChart->m_lineSeries->clear();
     m_plotTimer->start();
@@ -358,4 +366,15 @@ void IndustrialMonitor::onclearAlarmRecords() {
     ui->alarmTableWidget->setRowCount(0);
 
     updateAlarmCountLabel();
+}
+
+void IndustrialMonitor::showAlarmSettingDialog() {
+    AlarmSettingDialog dlg(this);
+
+    switch (dlg.exec()) {
+    case QDialog::Accepted:
+        break;
+
+    }
+
 }
