@@ -42,8 +42,10 @@ void AlarmSettingDialog::initUi() {
 		itemCh->setFlags(itemCh->flags() & ~Qt::ItemIsEditable); // 通道号禁止修改
 		ui->thresholdTableWidget->setItem(row, 0, itemCh);
 
-		// 名称（普通文本，可修改）
-		ui->thresholdTableWidget->setItem(row, 1, new QTableWidgetItem(th.sensorName));
+		// 名称
+		QTableWidgetItem* name = new QTableWidgetItem(th.sensorName);
+		name->setFlags(name->flags() & ~Qt::ItemIsEditable); 
+		ui->thresholdTableWidget->setItem(row, 1, name);
 
 		QDoubleSpinBox* spinMin = new QDoubleSpinBox(ui->thresholdTableWidget);
 		spinMin->setRange(-9999.0, 9999.0);
