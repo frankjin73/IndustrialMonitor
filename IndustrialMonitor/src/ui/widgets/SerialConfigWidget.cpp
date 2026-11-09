@@ -2,9 +2,10 @@
 #include <QSerialPortInfo>
 #include <QMessageBox>
 
-SerialConfigWidget::SerialConfigWidget(QWidget *parent)
-	:QWidget(parent)
-	,ui(new Ui::SerialConfigWidgetClass())
+SerialConfigWidget::SerialConfigWidget(QWidget *parent, const SerialConfig& serialConfig)
+	: QWidget(parent)
+	, ui(new Ui::SerialConfigWidgetClass())
+	, m_serialConfig(serialConfig)
 	, isOpen(false)
 {
 	ui->setupUi(this);
@@ -73,8 +74,18 @@ void SerialConfigWidget::refreshPorts() {
 	else {
 		//恢复之前选中的端口
 		int idx = ui->portComboBox->findData(currentPort);
-		if (idx >= 0)
+		if (idx >= 0) {
 			ui->portComboBox->setCurrentIndex(idx);
+
+		} else {
+			int index = ui->portComboBox->findData(m_serialConfig.portName);
+			if (index != -1) {
+				ui->portComboBox->setCurrentIndex(index); //找到了，设置选中
+			}
+			else {
+				qDebug() << "没找到serialConfig.portName对应的数据";
+			}
+		}
 	}
 }
 
@@ -90,7 +101,13 @@ void SerialConfigWidget::togglePort() {
 			QMessageBox::warning(this, "提示", "请先选择一个串口。");
 			return;
 		}
-		emit openRequested(portName, currentBaudRate(), currentDataBit(), currentParity(), currentStopBits());
+		m_serialConfig.portName = currentPortName();
+		m_serialConfig.baudRate = currentBaudRate();
+		m_serialConfig.dataBit = currentDataBit();
+		m_serialConfig.parity = currentParity();
+		m_serialConfig.stopBits = currentStopBits();
+
+		emit openRequested(m_serialConfig);
 	}
 }
 
@@ -114,11 +131,14 @@ void SerialConfigWidget::errorOccurred(const QString& message) {
 void SerialConfigWidget::setupBaudRateOptions() {
 
 	QList<int> baudRates = { 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
+	int count = 0;
 	for (auto baud : baudRates) {
 		ui->baudRateComboBox->addItem(QString::number(baud), baud);
+		if (baud == m_serialConfig.baudRate) {
+			ui->baudRateComboBox->setCurrentIndex(count);//默认115200
+		}
+		++count;
 	}
-
-	ui->baudRateComboBox->setCurrentIndex(7);//默认115200
 	ui->baudRateComboBox->view()->setTextElideMode(Qt::ElideNone);
 }
 
@@ -126,22 +146,42 @@ void SerialConfigWidget::setupBaudRateOptions() {
 void SerialConfigWidget::setupDataBitsOptions() {
 
 	QList<int> dataBits = { 5,6,7,8 };
+	int count = 0;
 	for (auto bit : dataBits) {
 		ui->dataBitsComboBox->addItem(QString::number(bit), bit);
+		if (bit == m_serialConfig.dataBit) {
+			ui->dataBitsComboBox->setCurrentIndex(count);//默认8
+		}
+		++count;
 	}
-	ui->dataBitsComboBox->setCurrentIndex(3);//默认8
 }
 
 void SerialConfigWidget::setupParityOptions() {
 	ui->parityComboBox->addItem("None", QSerialPort::NoParity);
 	ui->parityComboBox->addItem("Even", QSerialPort::EvenParity);
 	ui->parityComboBox->addItem("Odd", QSerialPort::OddParity);
+	int index = ui->parityComboBox->findData(m_serialConfig.parity);
+
+	if (index != -1) {
+		ui->parityComboBox->setCurrentIndex(index); //找到了，设置选中
+	}
+	else {
+		qDebug() << "没找到serialConfig.parity对应的数据";
+	}
 }
 
 void SerialConfigWidget::setupStopBitsOptions() {
 	ui->stopBitsComboBox->addItem("1", QSerialPort::OneStop);
 	ui->stopBitsComboBox->addItem("1.5", QSerialPort::OneAndHalfStop);
 	ui->stopBitsComboBox->addItem("2", QSerialPort::TwoStop);
+
+	int index = ui->stopBitsComboBox->findData(m_serialConfig.stopBits);
+	if (index != -1) {
+		ui->stopBitsComboBox->setCurrentIndex(index); 
+	}
+	else {
+		qDebug() << "没找到serialConfig.stopBits对应的数据";
+	}
 }
 
 void SerialConfigWidget::setUiEnabled(bool open) {

@@ -6,6 +6,11 @@
 #include <QList>
 #include "SensorData.h"
 #include "RealtimeChartWidget.h"
+#include "DatabaseManager.h"
+#include "DataRepository.h"
+#include "AlarmManager.h"
+#include "AlarmSettingDialog.h"
+#include "ConfigManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -22,6 +27,7 @@ public:
     IndustrialMonitor(QWidget *parent = nullptr);
     ~IndustrialMonitor();
     void initUI();
+    void updateAlarmCountLabel();
 
 private slots:
     void onPortOpened(const QString& portName, qint32 baudRate);
@@ -29,9 +35,14 @@ private slots:
     void onSerialError(const QString &message);
     void ondataParsed(const QList<SensorData>& dataList);
     void onPlotTimeout();
+    void onQueryHistoryData();
+    void onExportToCsv();
+    void onclearAlarmRecords();
+    void showAlarmSettingDialog();
 
 private:
     Ui::IndustrialMonitorClass *ui;
+    ConfigManager* m_configManager;
     SerialConfigWidget *m_serialConfig;
     SerialWoker *m_serialWorker;
     QThread* m_serialThread;
@@ -39,5 +50,8 @@ private:
     RealtimeChartWidget* m_realtimeChart;
     QList<SensorData> m_dataList;
     QTimer* m_plotTimer;
+    DatabaseManager* m_dbManager;
+    DataRepository* m_repository;
+    AlarmManager* m_alarmManager;
 };
 

@@ -35,8 +35,8 @@ SENSOR_ID_DEFAULT = 0x01
 PORT = 'COM11'
 BAUD_RATE = 115200
 
-TEMP_MIN = 25.0
-TEMP_MAX = 30.0
+TEMP_MIN = 24.0
+TEMP_MAX = 31.0
 
 
 # ---------------- CRC16-MODBUS ----------------

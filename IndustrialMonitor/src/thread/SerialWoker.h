@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QSerialPort>
 #include "DataParser.h"
+#include "SerialConfig.h"
 
 class SerialWoker :
     public QObject
@@ -29,7 +30,7 @@ signals:
     void dataParsed(const QList<SensorData>& dataList);
     
 public slots:
-    void openPort(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits);
+    void openPort(const SerialConfig& config);
     void closePort();
     void onReadyRead();
 

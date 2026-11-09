@@ -3,7 +3,8 @@
 #include <QtWidgets>
 #include <QWidget>
 #include <QSerialPort>
-#include <ui_SerialConfigWidget.h>
+#include "ui_SerialConfigWidget.h"
+#include "SerialConfig.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SerialConfigWidgetClass; }
@@ -14,7 +15,7 @@ class SerialConfigWidget : public QWidget
 	Q_OBJECT
 
 public:
-	SerialConfigWidget(QWidget *parent = nullptr);
+	SerialConfigWidget(QWidget* parent = nullptr, const SerialConfig& serialConfig = {});
 	~SerialConfigWidget();
 
 	QString currentPortName() const;
@@ -24,9 +25,10 @@ public:
 	qint32 currentStopBits() const;
 
 	bool isOpen = false;
+	SerialConfig m_serialConfig;
 
 signals:
-	void openRequested(const QString& portName, qint32 baudRate, qint8 dataBit, qint8 parity, qint8 stopBits);
+	void openRequested(const SerialConfig& config);
 	void closeRequested();
 
 public slots: 
@@ -49,6 +51,5 @@ private:
 	void setUiEnabled(bool open);
 
 	Ui::SerialConfigWidgetClass* ui;
-
 };
 

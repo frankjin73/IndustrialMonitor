@@ -7,11 +7,15 @@
 IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::IndustrialMonitorClass())
-    , m_serialConfig(new SerialConfigWidget(this))
+    , m_configManager(new ConfigManager())
+    , m_serialConfig(new SerialConfigWidget(this, m_configManager->loadSerialConfig()))
     , m_serialWorker(new SerialWoker())
     , m_serialThread(new QThread(this))
     , m_realtimeChart(new RealtimeChartWidget(ui->chartContainer))
     , m_plotTimer(new QTimer(this))
+    , m_dbManager(new DatabaseManager())
+    , m_repository(new DataRepository(m_dbManager->connectionName()))
+    , m_alarmManager(new AlarmManager(this, m_configManager->loadThresholds()))
 {
     ui->setupUi(this);
     this->resize(1200, 800);
@@ -36,12 +40,23 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     m_plotTimer->setInterval(1000);
     m_plotTimer->setTimerType(Qt::CoarseTimer);
     connect(m_plotTimer, &QTimer::timeout, this, &IndustrialMonitor::onPlotTimeout);
-    m_plotTimer->start();
 
     //改变SerialConfigWidget的ui
     connect(m_serialWorker, &SerialWoker::portOpened, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portOpened(); });
     connect(m_serialWorker, &SerialWoker::portClosed, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portClosed(); });
     
+    
+    //弹出传感器阈值设置对话框
+    connect(ui->actionSettings,&QAction::triggered, this,&IndustrialMonitor::showAlarmSettingDialog);
+
+    //清空报警记录
+    connect(ui->clearAlarmButton, &QPushButton::clicked, this, &IndustrialMonitor::onclearAlarmRecords);
+
+    //历史数据查询
+    connect(ui->queryButton, &QPushButton::clicked, this, &IndustrialMonitor::onQueryHistoryData);
+    //历史数据导出
+    connect(ui->exportButton, &QPushButton::clicked, this, &IndustrialMonitor::onExportToCsv);
+
     m_serialThread->start();
 }
 
@@ -63,6 +78,16 @@ IndustrialMonitor::~IndustrialMonitor()
     if (m_serialConfig) {
         delete m_serialConfig;
         m_serialConfig = nullptr;
+    }
+
+    if (m_dbManager) {
+        delete m_dbManager;
+        m_dbManager = nullptr;
+    }
+
+    if (m_repository) {
+        delete m_repository;
+        m_repository = nullptr;
     }
 
     if (ui) {
@@ -91,9 +116,37 @@ void IndustrialMonitor::initUI()
     //暂时不显示
     ui->dataTableWidget->hide();
     ui->rawDataGroupBox->hide();
+
+    //报警记录表
+    ui->alarmTableWidget->setColumnWidth(0, 150);
+  //  ui->alarmTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->alarmTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers); //只读
+    ui->alarmTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);    //整行选中。
+    ui->alarmTableWidget->setAlternatingRowColors(true);  //隔行变色，好看。
+
+    //历史数据查询范围默认从当前时间到一小时前
+    QDateTime now = QDateTime::currentDateTime();
+    ui->startTimeEdit->setDateTime(now.addSecs(-3600));
+    ui->endTimeEdit->setDateTime(now);
+
+    //历史数据表
+    ui->historyTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers); //只读
+    ui->historyTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);    //整行选中。
+    ui->historyTableWidget->setAlternatingRowColors(true);  //隔行变色，好看。
+    //时间列宽度随内容调整，其余列宽自适应
+    auto* header = ui->historyTableWidget->horizontalHeader();
+    ui->historyTableWidget->setColumnWidth(0, 150);
+    //header->setSectionResizeMode(0, QHeaderView::ResizeToContents);  // 时间列
+    header->setSectionResizeMode(1, QHeaderView::Stretch);
+    header->setSectionResizeMode(2, QHeaderView::Stretch);
+    header->setSectionResizeMode(3, QHeaderView::Stretch);
+    header->setSectionResizeMode(4, QHeaderView::Stretch);
 }
 
 void IndustrialMonitor::onPortOpened(const QString& portName, qint32 baudRate) {
+    //讲串口设置的参数存到ini文件
+    m_configManager->saveSerialConfig(m_serialConfig->m_serialConfig);
+    
     m_statusLabel->setText("已连接");
     m_realtimeChart->m_lineSeries->clear();
     m_plotTimer->start();
@@ -115,6 +168,59 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
     m_dataList.append(dataList);
 
     for (const auto &data : dataList) {
+        //存入sensor_data表
+        m_repository->insertSensorData(data);
+        
+        //检测传感器状态
+        auto result = m_alarmManager->check(data);
+        switch (result) {
+        case AlarmResult::Triggered:{
+            // 报警信息存入数据库
+            QString message = m_alarmManager->getAlarmMessage(data.sensorId) + QString::number(data.value, 'f', 2);
+            auto record = AlarmRecord(data.timestamp, data.sensorId, message);
+            m_repository->insertAlarmRecord(record);
+
+            {   // 报警信息插表格
+                ui->alarmTableWidget->insertRow(0);
+                ui->alarmTableWidget->setUpdatesEnabled(false);
+                ui->alarmTableWidget->setSortingEnabled(false);
+
+                //第0列：时间
+                auto timeStr = record.timestamp.toString("yyyy-MM-dd HH:mm:ss");
+                QTableWidgetItem* itemTime = new QTableWidgetItem(timeStr);
+                itemTime->setTextAlignment(Qt::AlignCenter);
+                ui->alarmTableWidget->setItem(0, 0, itemTime);
+
+                //第1列：传感器ID
+                QTableWidgetItem* itemSensor = new QTableWidgetItem(QString::number(record.sensorId));
+                itemSensor->setTextAlignment(Qt::AlignCenter);
+                ui->alarmTableWidget->setItem(0, 1, itemSensor);
+
+                //第2列：类型
+                QTableWidgetItem* itemMessage = new QTableWidgetItem(record.message);
+                itemMessage->setTextAlignment(Qt::AlignCenter);
+                ui->alarmTableWidget->setItem(0, 2, itemMessage);
+
+                int maxRows = 100;
+                if (ui->alarmTableWidget->rowCount() > maxRows) {
+                    ui->alarmTableWidget->removeRow(100); // 删掉第 100 行（最旧的数据）
+                }
+
+                ui->alarmTableWidget->setSortingEnabled(true);
+                ui->alarmTableWidget->setUpdatesEnabled(true);
+            }
+            updateAlarmCountLabel();
+
+
+            break;
+        }
+        case AlarmResult::Recovered:
+                // 就是上面那个倒序扫
+            break;
+        case AlarmResult::Normal:
+            break;
+        }
+
         // 温度，追加到文本框
         const QString text = QString::number(data.value)+"\n";
         ui->rawDataTextEdit->moveCursor(QTextCursor::End);
@@ -150,4 +256,127 @@ void IndustrialMonitor::onPlotTimeout() {
     m_realtimeChart->m_lineSeries->replace(points);
     m_realtimeChart->m_axisX->setRange(minTime, now);
     m_realtimeChart->m_chartView->setUpdatesEnabled(true);
+}
+
+
+void IndustrialMonitor::onQueryHistoryData() {
+    auto startTime = ui->startTimeEdit->dateTime().toMSecsSinceEpoch();
+    auto endTime = ui->endTimeEdit->dateTime().toMSecsSinceEpoch();
+
+    if (startTime >= endTime) {
+        qWarning() << "起始时间必须小于结束时间!";
+        QMessageBox::warning(this, "警告", "起始时间必须小于结束时间!");
+    }
+    else {
+        QList<SensorData> historyData = m_repository->querySensorData(startTime, endTime);
+        ui->historyTableWidget->clearContents();    // 清空内容，保留表头
+
+        if (historyData.isEmpty()) {
+            ui->queryStatusLabel->setText("无数据");
+            ui->historyTableWidget->setRowCount(0);
+        }
+        else {
+            if (historyData.size() != 10000) {
+                ui->queryStatusLabel->setText(QString("共查询到[%1]条记录").arg(historyData.size()));
+            }
+            else {
+                ui->queryStatusLabel->setText("仅显示前 10000 条");
+            }
+            
+            ui->historyTableWidget->setRowCount(historyData.size());
+            ui->historyTableWidget->setUpdatesEnabled(false);
+            ui->historyTableWidget->setSortingEnabled(false);
+
+            for (int row = 0; row < historyData.size(); ++row) {
+                const auto& data = historyData[row];
+
+                //第0列：时间
+                auto timeStr = data.timestamp.toString("yyyy-MM-dd HH:mm:ss");
+                QTableWidgetItem* itemTime = new QTableWidgetItem(timeStr);
+                itemTime->setTextAlignment(Qt::AlignCenter);
+                ui->historyTableWidget->setItem(row, 0, itemTime);
+
+                //第1列：设备ID
+                QTableWidgetItem* itemDevice = new QTableWidgetItem(QString::number(data.deviceId));
+                itemDevice->setTextAlignment(Qt::AlignCenter);
+                ui->historyTableWidget->setItem(row, 1, itemDevice);
+
+                //第2列：传感器ID
+                QTableWidgetItem* itemSensor = new QTableWidgetItem(QString::number(data.sensorId));
+                itemSensor->setTextAlignment(Qt::AlignCenter);
+                ui->historyTableWidget->setItem(row, 2, itemSensor);
+
+                //第3列：类型
+                QTableWidgetItem* itemType = new QTableWidgetItem(data.typeName());
+                itemType->setTextAlignment(Qt::AlignCenter);
+                ui->historyTableWidget->setItem(row, 3, itemType);
+
+                //第4列：数据
+                QTableWidgetItem* itemValue = new QTableWidgetItem(QString::number(data.value, 'f', 2));
+                itemValue->setTextAlignment(Qt::AlignCenter);
+                ui->historyTableWidget->setItem(row, 4, itemValue);
+            }
+
+            ui->historyTableWidget->setSortingEnabled(true);
+            ui->historyTableWidget->setUpdatesEnabled(true);
+        }
+    }
+
+}
+
+void IndustrialMonitor::onExportToCsv() {
+    QString filePath = QFileDialog::getSaveFileName(this, "保存csv文件", "data.csv", "CSV Files (*.csv)");
+    if (filePath.isEmpty()) return;
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, "错误", "无法创建文件！\n详细错误："+ file.errorString());
+        return;
+    }
+
+    QTextStream out(&file);
+    //解决 Excel 打开中文乱码
+    out.setEncoding(QStringConverter::Utf8);
+    out << "\xEF\xBB\xBF";
+
+    //写表头
+    out << "时间,设备ID,传感器ID,类型,数值\n";
+
+    int rowCount = ui->historyTableWidget->rowCount();
+    int colCount = ui->historyTableWidget->columnCount();
+
+    for (int row = 0; row < rowCount; ++row) {
+        QString temp = "";
+        for (int col = 0; col < colCount-1; ++col) {
+            QTableWidgetItem* item = ui->historyTableWidget->item(row, col);
+            temp += item->text()+",";
+        }
+        out << temp + ui->historyTableWidget->item(row, colCount - 1)->text() + "\n";
+    }
+    file.close();
+    QMessageBox::information(this, "成功", "数据导出完成！");
+}
+
+void IndustrialMonitor::updateAlarmCountLabel() {
+    ui->alarmStatusLabel->setText(QString("当前报警数: %1 条").arg(ui->alarmTableWidget->rowCount()));
+}
+
+void IndustrialMonitor::onclearAlarmRecords() {
+    ui->alarmTableWidget->clearContents();    // 清空内容，保留表头
+    ui->alarmTableWidget->setRowCount(0);
+
+    updateAlarmCountLabel();
+}
+
+void IndustrialMonitor::showAlarmSettingDialog() {
+    AlarmSettingDialog dlg(this, m_configManager->loadThresholds());
+
+    switch (dlg.exec()) {
+    case QDialog::Accepted:
+        auto newThs = dlg.getThresholds();
+        m_alarmManager->setThreshold(newThs);
+        m_configManager->saveThresholds(newThs);
+        break;
+    }
+
 }
