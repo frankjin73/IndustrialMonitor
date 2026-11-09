@@ -17,7 +17,7 @@ class AlarmManager :
 
 public:
     AlarmManager(QObject* parent = nullptr, const QMap<quint8, Threshold>& thresholds ={});
-    void setThreshold(quint8 sensorId, double min, double max, QString sensorName);
+    void setThreshold(const QMap<quint8, Threshold>& Thresholds);
     AlarmResult check(const SensorData &data);
     QString getAlarmMessage(quint8 sensorId);
 

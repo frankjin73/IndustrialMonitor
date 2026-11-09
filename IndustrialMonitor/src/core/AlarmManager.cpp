@@ -11,8 +11,12 @@ AlarmManager::AlarmManager(QObject* parent, const QMap<quint8, Threshold>& Thres
     }
 }
 
-void AlarmManager::setThreshold(quint8 sensorId, double min, double max, QString sensorName) {
-
+void AlarmManager::setThreshold(const QMap<quint8, Threshold>& Thresholds) {
+    m_sensorThreshold = Thresholds;
+    m_alarmState.clear();
+    for (auto it = m_sensorThreshold.cbegin(); it != m_sensorThreshold.cend(); ++it) {
+        m_alarmState.insert(it.key(), false);
+    }
 }
 
 

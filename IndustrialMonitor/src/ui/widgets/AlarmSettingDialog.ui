@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
+    <width>412</width>
     <height>282</height>
    </rect>
   </property>
@@ -38,7 +38,12 @@
        </attribute>
        <column>
         <property name="text">
-         <string>传感器</string>
+         <string>传感器ID</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>名称</string>
         </property>
        </column>
        <column>
