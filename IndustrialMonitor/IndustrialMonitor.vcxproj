@@ -118,6 +118,7 @@
     <ClCompile Include="src\ui\widgets\RealtimeChartWidget.cpp" />
     <ClCompile Include="src\ui\widgets\SerialConfigWidget.cpp" />
     <ClCompile Include="src\utils\ConfigManager.cpp" />
+    <ClCompile Include="src\utils\Logger.cpp" />
     <QtRcc Include="resources\IndustrialMonitor.qrc" />
     <QtUic Include="src\ui\IndustrialMonitor.ui" />
     <QtUic Include="src\ui\widgets\AlarmSettingDialog.ui" />
@@ -133,6 +134,7 @@
     <QtMoc Include="src\ui\widgets\SerialConfigWidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\utils\Logger.h" />
     <QtMoc Include="src\communication\TcpServerManager.h" />
     <ClInclude Include="src\model\SerialConfig.h" />
     <ClInclude Include="src\model\Threshold.h" />
