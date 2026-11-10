@@ -66,13 +66,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src\utils;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src\utils;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\communication;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src\utils;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src\utils;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\communication;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -104,6 +104,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\communication\TcpServerManager.cpp" />
     <ClCompile Include="src\core\AlarmManager.cpp" />
     <ClCompile Include="src\core\DataParser.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -132,6 +133,7 @@
     <QtMoc Include="src\ui\widgets\SerialConfigWidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="src\communication\TcpServerManager.h" />
     <ClInclude Include="src\model\SerialConfig.h" />
     <ClInclude Include="src\model\Threshold.h" />
     <ClInclude Include="src\utils\ConfigManager.h" />

@@ -12,10 +12,13 @@ ConfigManager::ConfigManager() {
          m_settings->setValue("general/initialized", true); // 写入标志位，下次就不会进来了
 
          // 写入串口默认参数
-         saveSerialConfig({ "COM10", 115200 ,8,0,1});
+         saveSerialConfig(DEFAULT_SERIALCONFIG);
          
          //写入传感器默认阈值
-         saveThresholds({ {1, Threshold{25,30,true,"温度"}}});
+         saveThresholds(getDefaultThresholds());
+
+         // 写Tcp远程监控参数
+         saveTcpPort(DEFAULT_TCPPORT);
      }
      else {
          qDebug() << "已找到配置文件，正在读取...";
@@ -95,4 +98,21 @@ QMap<quint8, Threshold> ConfigManager::loadThresholds() const {
     m_settings->endGroup();
 
     return thresholds;
+}
+
+void ConfigManager::saveTcpPort(const quint16& port) {
+    m_settings->beginGroup("Tcp");
+    m_settings->setValue("port", port);
+    m_settings->endGroup();
+    m_settings->sync();
+}
+
+quint16 ConfigManager::loadTcpPort() const{
+    quint16 port;
+
+    m_settings->beginGroup("Tcp");
+    port = static_cast<quint16>(m_settings->value("port", DEFAULT_TCPPORT).toInt());
+    m_settings->endGroup();
+
+    return port;
 }

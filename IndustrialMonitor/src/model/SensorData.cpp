@@ -23,3 +23,14 @@ QString SensorData::typeName() const {
 		return QString("未知数据类型");
 	}
 }
+
+QJsonObject SensorData::toJson() const {
+	QJsonObject obj;
+	obj.insert("timestamp", timestamp.toMSecsSinceEpoch()); //毫秒时间戳
+	obj.insert("deviceId", deviceId);
+	obj.insert("sensorId", sensorId);
+	obj.insert("dataType", dataType);
+	obj.insert("value", value);
+	obj.insert("typeName", typeName());
+	return obj;
+}

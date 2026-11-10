@@ -2,6 +2,7 @@
 #include <qtypes.h>
 #include <qstring.h>
 #include <QDateTime>
+#include <QJsonObject>
 
 #define DATA_TYPE_TEMP_INT16  0x01  //温度
 #define CMD_SENSOR_REPORT  0x01
@@ -19,6 +20,7 @@ public:
     SensorData();
     SensorData(QDateTime timestamp, quint8 deviceId,quint8 sensorId,quint8 dataType, double value);
     QString typeName() const;
+    QJsonObject toJson() const;
 
     QDateTime timestamp;
     quint8 deviceId;

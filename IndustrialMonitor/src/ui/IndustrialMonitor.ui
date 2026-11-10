@@ -363,6 +363,8 @@
    <addaction name="actionClosePort"/>
    <addaction name="actionStartAcq"/>
    <addaction name="actionStopAcq"/>
+   <addaction name="actionStartTcp"/>
+   <addaction name="actionStopTcp"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
   </widget>
@@ -415,6 +417,25 @@
    </property>
    <property name="text">
     <string>设置</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionStartTcp">
+   <property name="text">
+    <string>启动远程监控</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionStopTcp">
+   <property name="text">
+    <string>停止远程监控</string>
+   </property>
+   <property name="toolTip">
+    <string>停止远程监控</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

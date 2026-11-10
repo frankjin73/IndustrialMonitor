@@ -28,6 +28,9 @@
     <Filter Include="src\utils">
       <UniqueIdentifier>{524cd54f-129c-4d57-9573-5abd4fb21ef8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\communication">
+      <UniqueIdentifier>{bb2c19fc-81fa-435b-bd60-29aff6897062}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -69,6 +72,9 @@
     <ClCompile Include="src\utils\ConfigManager.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\communication\TcpServerManager.cpp">
+      <Filter>src\communication</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\IndustrialMonitor.qrc">
@@ -104,6 +110,9 @@
     </QtMoc>
     <QtMoc Include="src\ui\widgets\AlarmSettingDialog.h">
       <Filter>src\ui\widgets</Filter>
+    </QtMoc>
+    <QtMoc Include="src\communication\TcpServerManager.h">
+      <Filter>src\communication</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

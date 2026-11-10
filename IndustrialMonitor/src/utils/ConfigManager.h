@@ -6,6 +6,9 @@
 #include "SerialConfig.h"
 #include "Threshold.h"
 
+#define DEFAULT_SERIALCONFIG { "COM10", 115200 ,8,0,1}
+#define DEFAULT_TCPPORT	8888
+
 class ConfigManager
 {
 public:
@@ -16,9 +19,13 @@ public:
 	void saveSerialConfig(const SerialConfig& cfg);
 	SerialConfig loadSerialConfig() const;
 
-	// 阈值
+	//阈值
 	void saveThresholds(const QMap<quint8, Threshold>& thresholds);
 	QMap<quint8, Threshold> loadThresholds() const;
+
+	//TCP
+	void saveTcpPort(const quint16& port);
+	quint16 loadTcpPort() const;
 
 private:
 	QSettings* m_settings = nullptr;
