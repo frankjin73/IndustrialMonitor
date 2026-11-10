@@ -11,6 +11,7 @@
 #include "AlarmManager.h"
 #include "AlarmSettingDialog.h"
 #include "ConfigManager.h"
+#include "TcpServerManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class IndustrialMonitorClass; };
@@ -39,6 +40,7 @@ private slots:
     void onExportToCsv();
     void onclearAlarmRecords();
     void showAlarmSettingDialog();
+    void actionStartTcpTriggered();
 
 private:
     Ui::IndustrialMonitorClass *ui;
@@ -53,5 +55,9 @@ private:
     DatabaseManager* m_dbManager;
     DataRepository* m_repository;
     AlarmManager* m_alarmManager;
+    TcpServerManager* m_tcpManager;
+    quint16 m_tcpPort;
+    QLabel* m_tcpStatusLabel = nullptr;
+
 };
 

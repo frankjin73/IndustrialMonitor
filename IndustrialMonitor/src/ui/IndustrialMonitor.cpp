@@ -16,6 +16,8 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     , m_dbManager(new DatabaseManager())
     , m_repository(new DataRepository(m_dbManager->connectionName()))
     , m_alarmManager(new AlarmManager(this, m_configManager->loadThresholds()))
+    , m_tcpManager(new TcpServerManager(this))
+    , m_tcpPort(m_configManager->loadTcpPort())
 {
     ui->setupUi(this);
     this->resize(1200, 800);
@@ -48,6 +50,21 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     
     //弹出传感器阈值设置对话框
     connect(ui->actionSettings,&QAction::triggered, this,&IndustrialMonitor::showAlarmSettingDialog);
+
+    //设置TCP状态栏
+    connect(m_tcpManager, &TcpServerManager::tcpStatusUpdate, this,[this](const QString&message){
+        m_tcpStatusLabel->setText(message);
+    });
+
+    //启动远程监控
+    connect(ui->actionStartTcp, &QAction::triggered, this, &IndustrialMonitor::actionStartTcpTriggered);
+
+    //停止远程监控
+    connect(ui->actionStopTcp, &QAction::triggered, this, [this] {
+        m_tcpManager->stop();
+        ui->actionStartTcp->setEnabled(true);
+        ui->actionStopTcp->setEnabled(false);
+    });
 
     //清空报警记录
     connect(ui->clearAlarmButton, &QPushButton::clicked, this, &IndustrialMonitor::onclearAlarmRecords);
@@ -110,8 +127,25 @@ void IndustrialMonitor::initUI()
     layout->addWidget(m_serialConfig);
 
     //初始化状态栏
+    ui->statusBar->setStyleSheet("QStatusBar::item { border: none; }");
+
     m_statusLabel = new QLabel("未连接", this);
+    m_statusLabel->setStyleSheet("border: none; padding: 0px 5px;"); // 明确无边框，加一点左右边距
     ui->statusBar->addWidget(m_statusLabel);
+
+    QFrame* line = new QFrame(this);
+    line->setFrameShape(QFrame::VLine);     // 垂直线
+    line->setFrameShadow(QFrame::Plain);    
+    line->setStyleSheet("color: #cccccc;"); // 设置线的颜色（浅灰色）
+    line->setFixedHeight(14);               // 限制高度，上下留白
+    ui->statusBar->addWidget(line);
+
+    m_tcpStatusLabel = new QLabel("远程监控：未启动", this);
+    m_tcpStatusLabel->setStyleSheet("border: none; padding: 0px 5px;");
+    ui->statusBar->addWidget(m_tcpStatusLabel);
+
+    ui->actionStartTcp->setEnabled(true);
+    ui->actionStopTcp->setEnabled(false);
 
     //暂时不显示
     ui->dataTableWidget->hide();
@@ -170,7 +204,7 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
     for (const auto &data : dataList) {
         //存入sensor_data表
         m_repository->insertSensorData(data);
-        
+        m_tcpManager->broadcastMessage(data.toJson());;
         //检测传感器状态
         auto result = m_alarmManager->check(data);
         switch (result) {
@@ -379,4 +413,35 @@ void IndustrialMonitor::showAlarmSettingDialog() {
         break;
     }
 
+}
+
+void IndustrialMonitor::actionStartTcpTriggered() {
+    int count = 3;
+TRYAGAIN:
+    bool result = m_tcpManager->start(m_tcpPort);
+    if (result) {
+        ui->actionStartTcp->setEnabled(false);
+        ui->actionStopTcp->setEnabled(true);
+        m_configManager->saveTcpPort(m_tcpPort);
+    }
+    else {
+        bool ok;
+        // 弹出输入框，默认值为 0
+        int portValue = QInputDialog::getInt(this,
+            "端口不可用",
+            QString("端口 %1 被占用或不可用，请指定新端口（1-65535）：").arg(m_tcpPort),
+            m_tcpPort, 1, 65535, 1, &ok);
+
+        if (ok) {
+            m_tcpPort = portValue;
+            if (count != 0) {
+                --count;
+                goto TRYAGAIN;
+            }
+        }
+        else {
+            m_tcpStatusLabel->setText("远程监控：端口不可用");
+        }
+
+    }
 }
