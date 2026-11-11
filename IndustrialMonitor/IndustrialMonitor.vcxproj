@@ -114,7 +114,7 @@
     <ClCompile Include="src\model\SensorData.cpp" />
     <ClCompile Include="src\storage\DatabaseManager.cpp" />
     <ClCompile Include="src\storage\DataRepository.cpp" />
-    <ClCompile Include="src\thread\SerialWoker.cpp" />
+    <ClCompile Include="src\thread\SerialWorker.cpp" />
     <ClCompile Include="src\ui\IndustrialMonitor.cpp" />
     <ClCompile Include="src\ui\widgets\AlarmSettingDialog.cpp" />
     <ClCompile Include="src\ui\widgets\RealtimeChartWidget.cpp" />
@@ -130,7 +130,7 @@
     <QtMoc Include="src\ui\IndustrialMonitor.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\thread\SerialWoker.h" />
+    <QtMoc Include="src\thread\SerialWorker.h" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\ui\widgets\SerialConfigWidget.h" />

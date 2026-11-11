@@ -5,15 +5,15 @@
 #include "DataParser.h"
 #include "SerialConfig.h"
 
-class SerialWoker :
+class SerialWorker :
     public QObject
 {
     Q_OBJECT
 
 public:
-    SerialWoker(QObject *parent);
-    SerialWoker() = default;
-    ~SerialWoker();
+    SerialWorker(QObject *parent);
+    SerialWorker() = default;
+    ~SerialWorker();
 
     bool isOpen() const;
 
@@ -28,11 +28,14 @@ signals:
     //void dataReceived(const QByteArray &date);
     //串口数据解析完成
     void dataParsed(const QList<SensorData>& dataList);
+    //串口设备断连
+    void portDisconnected(const QString& message);
     
 public slots:
     void openPort(const SerialConfig& config);
     void closePort();
     void onReadyRead();
+    void handleSerialError(QSerialPort::SerialPortError error);
 
 private:
     QSerialPort* m_serialPort;
