@@ -67,12 +67,14 @@
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src\utils;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\communication;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>QT_MESSAGELOGCONTEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)src\thread;$(ProjectDir)src\core;$(ProjectDir)src\model;$(ProjectDir)src\utils;$(ProjectDir)src;$(ProjectDir)src\ui\widgets;$(ProjectDir)src\storage;$(ProjectDir)src\communication;$(ProjectDir)src\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>QT_MESSAGELOGCONTEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
