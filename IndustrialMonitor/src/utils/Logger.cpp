@@ -1,6 +1,7 @@
 #include "Logger.h"
 #include <QCoreApplication>
 #include <QDir>
+#include <Windows.h>
 
 Logger::Logger() {
 	m_logDirPath = QCoreApplication::applicationDirPath() + "/logs";
@@ -72,6 +73,10 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext& context, c
 
 	//拼接最终的日志字符串
 	QString finalLog = QString("[%1] [%2] [%3] : %4").arg(timeStr, typeStr, moduleName, msg);
+
+	//输出到 VS 的“输出”窗口
+	OutputDebugStringA(finalLog.toLocal8Bit().constData());
+	OutputDebugStringA("\n");
 
 	//输出到控制台
 	fprintf(stderr, "%s\n", finalLog.toLocal8Bit().constData());
