@@ -55,8 +55,8 @@ void DatabaseManager::initTables() {
 
 void DatabaseManager::close() {
 	if (db.isOpen()) {
-                db.close();
-            }
+		db.close();
+	}
 	db = QSqlDatabase();
 	QSqlDatabase::removeDatabase(connectionName());
 }

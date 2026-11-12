@@ -1,6 +1,6 @@
 #include "IndustrialMonitor.h"
 #include "SerialConfigWidget.h"
-#include "SerialWoker.h"
+#include "SerialWorker.h"
 
 #include <QVBoxLayout>
 
@@ -9,7 +9,7 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     , ui(new Ui::IndustrialMonitorClass())
     , m_configManager(new ConfigManager())
     , m_serialConfig(new SerialConfigWidget(this, m_configManager->loadSerialConfig()))
-    , m_serialWorker(new SerialWoker())
+    , m_serialWorker(new SerialWorker())
     , m_serialThread(new QThread(this))
     , m_realtimeChart(new RealtimeChartWidget(ui->chartContainer))
     , m_plotTimer(new QTimer(this))
@@ -26,17 +26,22 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     m_serialWorker->moveToThread(m_serialThread);
     
     //关闭串口
-    connect(m_serialConfig, &SerialConfigWidget::closeRequested, m_serialWorker, &SerialWoker::closePort);
+    connect(m_serialConfig, &SerialConfigWidget::closeRequested, m_serialWorker, &SerialWorker::closePort);
     //打开串口
-    connect(m_serialConfig, &SerialConfigWidget::openRequested, m_serialWorker, &SerialWoker::openPort);
+    connect(m_serialConfig, &SerialConfigWidget::openRequested, m_serialWorker, &SerialWorker::openPort);
 
     //设置statusLabe
-    connect(m_serialWorker, &SerialWoker::portOpened, this, &IndustrialMonitor::onPortOpened);
-    connect(m_serialWorker, &SerialWoker::portClosed, this, &IndustrialMonitor::onPortClosed);
-    connect(m_serialWorker, &SerialWoker::errorOccurred, this, &IndustrialMonitor::onSerialError);
+    connect(m_serialWorker, &SerialWorker::portOpened, this, &IndustrialMonitor::onPortOpened);
+    connect(m_serialWorker, &SerialWorker::portClosed, this, &IndustrialMonitor::onPortClosed);
+    connect(m_serialWorker, &SerialWorker::errorOccurred, this, &IndustrialMonitor::onSerialError);
+    connect(m_serialWorker, &SerialWorker::portDisconnected, this, [this](const QString& message) {
+        m_statusLabel->setText(message);
+        m_serialConfig->isOpen = m_serialWorker->isOpen();
+        m_serialConfig->portClosed();
+    });
     
     //处理收到的数据
-    connect(m_serialWorker, &SerialWoker::dataParsed, this, &IndustrialMonitor::ondataParsed);
+    connect(m_serialWorker, &SerialWorker::dataParsed, this, &IndustrialMonitor::ondataParsed);
 
     //定时器每一秒钟重绘一次图像，防止卡顿
     m_plotTimer->setInterval(1000);
@@ -44,8 +49,8 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     connect(m_plotTimer, &QTimer::timeout, this, &IndustrialMonitor::onPlotTimeout);
 
     //改变SerialConfigWidget的ui
-    connect(m_serialWorker, &SerialWoker::portOpened, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portOpened(); });
-    connect(m_serialWorker, &SerialWoker::portClosed, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portClosed(); });
+    connect(m_serialWorker, &SerialWorker::portOpened, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portOpened(); });
+    connect(m_serialWorker, &SerialWorker::portClosed, m_serialConfig, [&] {m_serialConfig->isOpen = m_serialWorker->isOpen(); m_serialConfig->portClosed(); });
     
     
     //弹出传感器阈值设置对话框
@@ -244,12 +249,11 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
                 ui->alarmTableWidget->setUpdatesEnabled(true);
             }
             updateAlarmCountLabel();
-
-
+            qWarning() << message;
             break;
         }
         case AlarmResult::Recovered:
-                // 就是上面那个倒序扫
+            qInfo()<< "传感器" + QString::number(data.sensorId) +" 数值" + QString::number(data.value, 'f', 2);
             break;
         case AlarmResult::Normal:
             break;

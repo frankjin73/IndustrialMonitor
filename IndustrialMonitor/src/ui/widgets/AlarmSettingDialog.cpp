@@ -71,8 +71,8 @@ void AlarmSettingDialog::initUi() {
 	ui->thresholdTableWidget->verticalHeader()->setVisible(false);
 	ui->thresholdTableWidget->setColumnWidth(0, 80);
 	ui->thresholdTableWidget->setColumnWidth(1, 80);
-	ui->thresholdTableWidget->setColumnWidth(2, 80);
-	ui->thresholdTableWidget->setColumnWidth(3, 80);
+	ui->thresholdTableWidget->setColumnWidth(2, 100);
+	ui->thresholdTableWidget->setColumnWidth(3, 100);
 	ui->thresholdTableWidget->setColumnWidth(4, 80);
 
 	int row = 0;

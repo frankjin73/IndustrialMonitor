@@ -39,7 +39,7 @@
     <ClCompile Include="src\ui\IndustrialMonitor.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
-    <ClCompile Include="src\thread\SerialWoker.cpp">
+    <ClCompile Include="src\thread\SerialWorker.cpp">
       <Filter>src\thread</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\widgets\SerialConfigWidget.cpp">
@@ -75,6 +75,9 @@
     <ClCompile Include="src\communication\TcpServerManager.cpp">
       <Filter>src\communication</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\Logger.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\IndustrialMonitor.qrc">
@@ -96,7 +99,7 @@
     <QtMoc Include="src\ui\IndustrialMonitor.h">
       <Filter>src\ui</Filter>
     </QtMoc>
-    <QtMoc Include="src\thread\SerialWoker.h">
+    <QtMoc Include="src\thread\SerialWorker.h">
       <Filter>src\thread</Filter>
     </QtMoc>
     <QtMoc Include="src\ui\widgets\SerialConfigWidget.h">
@@ -139,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="src\model\Threshold.h">
       <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Logger.h">
+      <Filter>src\utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
