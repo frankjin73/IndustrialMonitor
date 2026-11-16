@@ -20,7 +20,6 @@ IndustrialMonitor::IndustrialMonitor(QWidget *parent)
     , m_tcpPort(m_configManager->loadTcpPort())
 {
     ui->setupUi(this);
-    this->resize(1200, 800);
     initUI();
 
     m_serialWorker->moveToThread(m_serialThread);
@@ -152,10 +151,6 @@ void IndustrialMonitor::initUI()
     ui->actionStartTcp->setEnabled(true);
     ui->actionStopTcp->setEnabled(false);
 
-    //暂时不显示
-    ui->dataTableWidget->hide();
-    ui->rawDataGroupBox->hide();
-
     //报警记录表
     ui->alarmTableWidget->setColumnWidth(0, 150);
   //  ui->alarmTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -186,13 +181,13 @@ void IndustrialMonitor::onPortOpened(const QString& portName, qint32 baudRate) {
     //讲串口设置的参数存到ini文件
     m_configManager->saveSerialConfig(m_serialConfig->m_serialConfig);
     
-    m_statusLabel->setText("已连接");
+    m_statusLabel->setText("串口开启");
     m_realtimeChart->m_lineSeries->clear();
     m_plotTimer->start();
 }
 
 void IndustrialMonitor::onPortClosed() {
-    m_statusLabel->setText("未连接");
+    m_statusLabel->setText("串口关闭");
     m_dataList.clear();
     m_plotTimer->stop();
 }
@@ -209,7 +204,9 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
     for (const auto &data : dataList) {
         //存入sensor_data表
         m_repository->insertSensorData(data);
+
         m_tcpManager->broadcastMessage(data.toJson());;
+
         //检测传感器状态
         auto result = m_alarmManager->check(data);
         switch (result) {
@@ -259,13 +256,8 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
             break;
         }
 
-        // 温度，追加到文本框
-        const QString text = QString::number(data.value)+"\n";
-        ui->rawDataTextEdit->moveCursor(QTextCursor::End);
-        ui->rawDataTextEdit->insertPlainText(text);
-
         totalBytes += 15;   //目前是固定帧长
-        m_statusLabel->setText(QString("已连接 | 累计接收 %1 字节").arg(totalBytes));
+        m_statusLabel->setText(QString("串口已连接 | 累计接收 %1 字节").arg(totalBytes));
     }
 }
 

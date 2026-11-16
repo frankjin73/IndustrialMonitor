@@ -45,19 +45,19 @@ private slots:
 private:
     Ui::IndustrialMonitorClass *ui;
     ConfigManager* m_configManager;
-    SerialConfigWidget *m_serialConfig;
-    SerialWorker *m_serialWorker;
-    QThread* m_serialThread;
-    QLabel *m_statusLabel = nullptr;
-    RealtimeChartWidget* m_realtimeChart;
-    QList<SensorData> m_dataList;
-    QTimer* m_plotTimer;
-    DatabaseManager* m_dbManager;
-    DataRepository* m_repository;
-    AlarmManager* m_alarmManager;
-    TcpServerManager* m_tcpManager;
-    quint16 m_tcpPort;
-    QLabel* m_tcpStatusLabel = nullptr;
+    SerialConfigWidget *m_serialConfig; //串口设置模块
+    SerialWorker *m_serialWorker;   //串口数据解析
+    QThread* m_serialThread;    //串口线程
+    QLabel *m_statusLabel = nullptr;    //串口状态栏
+    RealtimeChartWidget* m_realtimeChart;   //实时串口数据显示
+    QList<SensorData> m_dataList;   //解析后的串口数据
+    QTimer* m_plotTimer;    //定时刷新ui，减少卡顿
+    DatabaseManager* m_dbManager;   //管理数据库
+    DataRepository* m_repository;   //查询&插入表格
+    AlarmManager* m_alarmManager;   //管理报警数据
+    TcpServerManager* m_tcpManager; //管理tcp连接，负责广播数据
+    quint16 m_tcpPort;  
+    QLabel* m_tcpStatusLabel = nullptr; //tcp状态栏
 
 };
 

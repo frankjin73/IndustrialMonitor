@@ -23,7 +23,7 @@ QList<SensorData> DataRepository::querySensorData(qint64 fromMs, qint64 toMs) {
 	QList<SensorData> dataList;
 	QSqlDatabase db = QSqlDatabase::database(m_connName);
 	QSqlQuery query(db);
-	query.prepare("SELECT timestamp,device_id,sensor_id,data_type,value FROM sensor_data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC LIMIT 10000");
+	query.prepare("SELECT timestamp,device_id,sensor_id,data_type,value FROM sensor_data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC LIMIT 5000");
 	query.addBindValue(fromMs);
 	query.addBindValue(toMs);
 
@@ -64,7 +64,7 @@ QList<AlarmRecord> DataRepository::queryAlarmRecord(qint64 fromMs, qint64 toMs) 
 	QList<AlarmRecord> recordList;
 	QSqlDatabase db = QSqlDatabase::database(m_connName);
 	QSqlQuery query(db);
-	query.prepare("SELECT timestamp,sensor_id,message FROM sensor_data WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC LIMIT 10000");
+	query.prepare("SELECT timestamp,sensor_id,message FROM alarm_records WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC LIMIT 5000");
 	query.addBindValue(fromMs);
 	query.addBindValue(toMs);
 
