@@ -13,7 +13,7 @@ TcpServerManager::~TcpServerManager() {
 }
 
 bool TcpServerManager::start(quint16 port) {
-	if (m_server->isListening()) m_server->close();
+	if (isListening()) m_server->close();
 
 	if (m_server->listen(QHostAddress::Any, port)) {
 		qInfo() << "TCP 启动成功 " + QString::number(port);
@@ -41,7 +41,7 @@ void TcpServerManager::stop() {
 	}
 	m_clients.clear();
 
-	if (m_server->isListening()) m_server->close();
+	if (isListening()) m_server->close();
 
 	emit tcpStatusUpdate("远程监控：未启动");
 }
@@ -97,6 +97,9 @@ void TcpServerManager::onDisconnected() {
 	qInfo() << "TCP 客户端断开 " + client->peerAddress().toString() + " " + QString::number(client->peerPort());
 	emit clientDisconnected(client->peerAddress().toString(), client->peerPort());
 
+	if (!m_clients.contains(client)) {
+		return;
+	}
 	m_clients.removeOne(client);
 	client->deleteLater();
 
@@ -104,5 +107,15 @@ void TcpServerManager::onDisconnected() {
 }
 
 void TcpServerManager::onErrorOccurred(QAbstractSocket::SocketError socketError) {
+	QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
+	if (!socket) return;
 
+	qWarning() << "网络错误:" << socket->errorString();
+
+	if (socketError == QAbstractSocket::RemoteHostClosedError ||	// 远程主机关闭连接
+		socketError == QAbstractSocket::NetworkError ||				// 网络错误
+		socketError == QAbstractSocket::SocketTimeoutError) {		// 连接超时
+		// abort() 会立刻触发 disconnected 信号
+		socket->abort();
+	}
 }

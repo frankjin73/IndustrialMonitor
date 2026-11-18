@@ -205,7 +205,8 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
         //存入sensor_data表
         m_repository->insertSensorData(data);
 
-        m_tcpManager->broadcastMessage(data.toJson());;
+        if(m_tcpManager->isListening())
+            m_tcpManager->broadcastMessage(data.toJson());;
 
         //检测传感器状态
         auto result = m_alarmManager->check(data);

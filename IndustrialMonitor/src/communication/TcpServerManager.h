@@ -17,7 +17,7 @@ public:
     bool start(quint16 port);
     void stop();
     void broadcastMessage(const QJsonObject& data);
-
+    inline bool isListening() { return m_server->isListening(); }
 signals:
     void tcpStatusUpdate(const QString& message);
     void clientConnected(const QString& ip, quint16 port);
