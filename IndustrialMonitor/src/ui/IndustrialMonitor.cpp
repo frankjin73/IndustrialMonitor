@@ -161,7 +161,7 @@ void IndustrialMonitor::initUI()
     //历史数据查询范围默认从当前时间到一小时前
     QDateTime now = QDateTime::currentDateTime();
     ui->startTimeEdit->setDateTime(now.addSecs(-3600));
-    ui->endTimeEdit->setDateTime(now);
+    ui->endTimeEdit->setDateTime(now.addSecs(300));
 
     //历史数据表
     ui->historyTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers); //只读
@@ -251,7 +251,7 @@ void IndustrialMonitor::ondataParsed(const QList<SensorData>& dataList) {
             break;
         }
         case AlarmResult::Recovered:
-            qInfo()<< "传感器" + QString::number(data.sensorId) +" 数值" + QString::number(data.value, 'f', 2);
+            qInfo()<< "异常状态恢复 传感器" + QString::number(data.sensorId) +" 数值" + QString::number(data.value, 'f', 2);
             break;
         case AlarmResult::Normal:
             break;
