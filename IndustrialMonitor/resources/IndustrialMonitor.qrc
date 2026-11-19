@@ -1,4 +1,9 @@
 <RCC>
-    <qresource prefix="IndustrialMonitor">
+    <qresource prefix="/">
+        <file>styles/app.qss</file>
+        <file>styles/arrow_down_disabled.svg</file>
+        <file>styles/arrow_down_normal.svg</file>
+        <file>styles/arrow_up_disabled.svg</file>
+        <file>styles/arrow_up_normal.svg</file>
     </qresource>
 </RCC>

@@ -150,6 +150,9 @@
     <ClInclude Include="src\storage\DataRepository.h" />
     <QtMoc Include="src\ui\widgets\RealtimeChartWidget.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\styles\app.qss" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
     <Import Project="$(QtMsBuild)\qt.targets" />

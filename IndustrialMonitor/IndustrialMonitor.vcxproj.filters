@@ -31,6 +31,9 @@
     <Filter Include="src\communication">
       <UniqueIdentifier>{bb2c19fc-81fa-435b-bd60-29aff6897062}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\styles">
+      <UniqueIdentifier>{56c5190a-e0a4-40ac-8565-580556c1957f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -146,5 +149,10 @@
     <ClInclude Include="src\utils\Logger.h">
       <Filter>src\utils</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\styles\app.qss">
+      <Filter>resources\styles</Filter>
+    </None>
   </ItemGroup>
 </Project>
