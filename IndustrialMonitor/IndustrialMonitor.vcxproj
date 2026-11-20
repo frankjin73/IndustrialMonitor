@@ -147,7 +147,7 @@
     <ClInclude Include="src\model\AlarmRecord.h" />
     <ClInclude Include="src\model\SensorData.h" />
     <ClInclude Include="src\storage\DatabaseManager.h" />
-    <ClInclude Include="src\storage\DataRepository.h" />
+    <QtMoc Include="src\storage\DataRepository.h" />
     <QtMoc Include="src\ui\widgets\RealtimeChartWidget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

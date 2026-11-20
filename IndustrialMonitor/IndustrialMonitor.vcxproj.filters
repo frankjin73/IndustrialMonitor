@@ -117,6 +117,9 @@
     <QtMoc Include="src\communication\TcpServerManager.h">
       <Filter>src\communication</Filter>
     </QtMoc>
+    <QtMoc Include="src\storage\DataRepository.h">
+      <Filter>src\storage</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\model\SensorData.h">
@@ -126,9 +129,6 @@
       <Filter>src\core</Filter>
     </ClInclude>
     <ClInclude Include="src\storage\DatabaseManager.h">
-      <Filter>src\storage</Filter>
-    </ClInclude>
-    <ClInclude Include="src\storage\DataRepository.h">
       <Filter>src\storage</Filter>
     </ClInclude>
     <ClInclude Include="src\model\AlarmRecord.h">

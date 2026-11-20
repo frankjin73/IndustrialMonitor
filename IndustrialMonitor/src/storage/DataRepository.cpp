@@ -1,22 +1,7 @@
 #include "DataRepository.h"
 
 void DataRepository::insertSensorData(const SensorData& data) {
-	QSqlDatabase db = QSqlDatabase::database(m_connName);
-
-	QSqlQuery query(db);
-	query.prepare("INSERT INTO sensor_data (timestamp, device_id, sensor_id, data_type, value) VALUES (?, ?, ?, ?, ?)");
-
-	query.addBindValue(data.timestamp.toMSecsSinceEpoch());	//存毫秒数方便快速查找
-	query.addBindValue(data.deviceId);
-	query.addBindValue(data.sensorId);
-	query.addBindValue(data.dataType);
-	query.addBindValue(data.value);
-
-	if (query.exec()) {
-		qDebug() << "Inserted sensor_data ID:"<< query.lastInsertId().toLongLong();
-	}else {
-		qWarning()<<"Insert sensor_data failed:"<< query.lastError().text();
-	}
+	m_pendingBuffer.append(data);
 }
 
 QList<SensorData> DataRepository::querySensorData(qint64 fromMs, qint64 toMs) {
@@ -79,4 +64,58 @@ QList<AlarmRecord> DataRepository::queryAlarmRecord(qint64 fromMs, qint64 toMs) 
 	}
 
 	return recordList;
+}
+
+void DataRepository::onDatabaseTimeout() {
+	if (m_pendingBuffer.isEmpty()) {
+		return;
+	}
+
+	QSqlDatabase db = QSqlDatabase::database(m_connName);
+	if (!db.transaction())   // 开启事务
+	{
+		qDebug() << "事务开启失败：" << db.lastError();
+		return;
+	}
+
+	QSqlQuery query(db);
+	query.prepare("INSERT INTO sensor_data (timestamp, device_id, sensor_id, data_type, value) VALUES (?, ?, ?, ?, ?)");
+
+	bool allOk = true;
+	qint64 okCount = 0;
+
+	for (auto &data : m_pendingBuffer)
+	{
+		query.bindValue(0, data.timestamp.toMSecsSinceEpoch());	//存毫秒数方便快速查找
+		query.bindValue(1, data.deviceId);
+		query.bindValue(2, data.sensorId);
+		query.bindValue(3, data.dataType);
+		query.bindValue(4, data.value);
+
+		if (!query.exec()) {
+			qWarning() << "单条插入失败:" << query.lastError().text();
+			allOk = false;
+			break;
+		}
+		okCount++;
+	}
+
+	if (allOk)
+	{
+		if (db.commit())
+		{
+			qDebug() << "批量入库成功，条数:" << okCount;
+			m_pendingBuffer.clear();
+		}
+		else
+		{
+			qWarning() << "commit失败，回滚:" << db.lastError();
+			db.rollback();
+		}
+	}
+	else
+	{
+		qWarning() << "中间插入失败，全部回滚";
+		db.rollback();
+	}
 }
