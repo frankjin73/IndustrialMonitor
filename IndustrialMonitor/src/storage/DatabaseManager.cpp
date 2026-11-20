@@ -41,6 +41,14 @@ void DatabaseManager::initTables() {
 		qWarning() << "create sensor_data failed:" << query.lastError().text();
 	}
 
+	// 创建时间索引，加快timestamp检索
+	if (!query.exec("CREATE INDEX IF NOT EXISTS idx_timestamp ON sensor_data (timestamp);")) {
+		qWarning() << "创建索引失败:" << query.lastError().text();
+	}
+	else {
+		qInfo() << "时间戳索引创建成功或已存在！";
+	}
+
 	if (!query.exec(R"(
         CREATE TABLE IF NOT EXISTS alarm_records (
             id        INTEGER PRIMARY KEY AUTOINCREMENT,

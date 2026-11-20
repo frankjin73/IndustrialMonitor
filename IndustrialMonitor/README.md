@@ -108,3 +108,4 @@ IndustrialMonitor/
 -报警状态机去重：AlarmManager每次check()根据“当前状态+本条是否超限”返回Triggered/Recovered/NoChange三种事件。
 -ConfigManager基于QSettings的INI格式，集中管理串口参数、报警阈值、TCP端口。读取失败时用默认值，INI文件不存在或内容损坏时自动回退默认值，不崩溃。
 -历史查询按时间范围索引，时间戳用INTEGER而非TEXT类型，加快查询时比较速度
+-数据先存入缓存，再定时批量写入数据库；程序关闭时刷缓存，防止遗漏

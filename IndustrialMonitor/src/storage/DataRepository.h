@@ -23,7 +23,7 @@ public:
 	QList<SensorData> querySensorData(qint64 fromMs,qint64 toMs);
 	void insertAlarmRecord(const AlarmRecord& record);
 	QList<AlarmRecord> queryAlarmRecord(qint64 fromMs, qint64 toMs);
-
+	inline void flushAll() { onDatabaseTimeout(); qInfo() << "缓存刷库"; }
 private slots:
 	void onDatabaseTimeout();
 

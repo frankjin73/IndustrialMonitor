@@ -30,6 +30,10 @@ public:
     void initUI();
     void updateAlarmCountLabel();
 
+protected:
+    //重写虚函数
+    void closeEvent(QCloseEvent* event) override;
+
 private slots:
     void onPortOpened(const QString& portName, qint32 baudRate);
     void onPortClosed();

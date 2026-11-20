@@ -442,3 +442,14 @@ TRYAGAIN:
 
     }
 }
+
+void IndustrialMonitor::closeEvent(QCloseEvent* event)
+{
+    qDebug() << "触发closeEvent，准备关闭窗口";
+
+    //把缓存全部刷数据库
+    m_repository->flushAll();
+
+    //调用父类的closeEvent，真正执行关闭
+    QMainWindow::closeEvent(event);
+}
